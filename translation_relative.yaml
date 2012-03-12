@@ -1,0 +1,57 @@
+
+#basename   :   camera/driver
+image_mode	:	camera/driver/image_mode,int,dynParam
+        rgb_resolution	:	resol,int,virtual
+        rgb_frequency	:	freq,int,virtual
+depth_mode	:	camera/driver/depth_mode,int,dynParam
+        depth_resolution	:	resol,int,virtual
+        depth_frequency	:	freq,int,virtual
+data_skip	:	camera/driver/data_skip,int,dynParam
+z_offset_mm	:	camera/driver/z_offset_mm,int,outParam
+
+depth_registration	:	camera/driver/depth_registration,bool,dynParam
+depth_time_offset	:	camera/driver/depth_time_offset,double,dynParam
+image_time_offset	:	camera/driver/image_time_offset,double,dynParam
+
+depth_ir_offset_x	:	camera/driver/depth_ir_offset_x,double,dynParam
+depth_ir_offset_y	:	camera/driver/depth_ir_offset_y,double,dynParam
+
+device_id	:	camera/driver/device_id,string,outParam
+
+cur_tilt_angle	:	cur_tilt_angle,std_msgs/Float64,publishedTopic
+tilt_angle	:	tilt_angle,std_msgs/Float16,topic
+led_option	:	led_option,std_msgs/UInt16,topic
+imu	:	imu,sensor_msgs/Imu,publishedTopic
+
+
+## List of image source topics:
+#camera/depthcamera_info,sensor_msgs/CameraInfo,topicName
+depth_disparity	:	camera/depth/disparity,stereo_msgs/DisparityImage,topicName
+depth	:	camera/depth/image,sensor_msgs/Image,topicName
+depth_raw	:	camera/depth/image_raw,sensor_msgs/Image,topicName
+depth_rect	:	camera/depth/image_rect,sensor_msgs/Image,topicName
+depth_rect_raw	:	camera/depth/image_rect_raw,sensor_msgs/Image,topicName
+depth_points	:	depth_pointscamera/depth/points,sensor_msgs/PointCloud2,topicName
+#camera/depth_registeredcamera_info,sensor_msgs/CameraInfo,topicName
+depth_registered_disparity	:	camera/depth_registered/disparity,stereo_msgs/DisparityImage,topicName
+depth_registered	:	camera/depth_registered/image,sensor_msgs/Image,topicName
+depth_registered_raw	:	camera/depth_registered/image_raw,sensor_msgs/Image,topicName
+depth_registered_rect	:	camera/depth_registered/image_rect,sensor_msgs/Image,topicName
+depth_registered_rect_raw	:	camera/depth_registered/image_rect_raw,sensor_msgs/Image,topicName
+depth_registered_points	:	camera/depth_registered/points,sensor_msgs/PointCloud2,topicName
+#camera/ircamera_info,sensor_msgs/CameraInfo,topicName
+ir_raw	:	camera/ir/image_raw,sensor_msgs/Image,topicName
+ir_rect	:	camera/ir/image_rect,sensor_msgs/Image,topicName
+#camera/projectorcamera_info,sensor_msgs/CameraInfo,topicName
+#camera/rgbcamera_info,sensor_msgs/CameraInfo,topicName
+rgb_color	:	camera/rgb/image_color,sensor_msgs/Image,topicName
+rgb_mono	:	camera/rgb/image_mono,sensor_msgs/Image,topicName
+rgb_raw	:	camera/rgb/image_raw,sensor_msgs/Image,topicName
+rgb_rect	:	camera/rgb/image_rect,sensor_msgs/Image,topicName
+rgb_rect_color	:	camera/rgb/image_rect_color,sensor_msgs/Image,topicName
+
+ALTERNATIVE_prop_data_skip	:	camera/driver/data_skip;int;0-10;dynParam
+ALTERNATIVE_another_prop	:	camera/driver/data_skip;int;uno,dos,tres;dynParam
+ALTERNATIVE_no_boundariesA	:	camera/driver/data_skip;int;;dynParam
+ALTERNATIVE_no_boundariesB	:	camera/driver/data_skip;int;algo-algo;dynParam
+

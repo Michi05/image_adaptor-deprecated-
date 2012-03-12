@@ -1,0 +1,23 @@
+\subsubsection usage Usage
+\verbatim
+<node name="image_adaptor" pkg="image_adaptor" type="image_adaptor">
+  <param name="image_mode" type="int" value="2" />
+  <param name="depth_mode" type="int" value="2" />
+  <param name="depth_registration" type="bool" value="False" />
+  <param name="data_skip" type="int" value="0" />
+  <param name="depth_time_offset" type="double" value="0.0" />
+  <param name="image_time_offset" type="double" value="0.0" />
+  <param name="depth_ir_offset_x" type="double" value="5.0" />
+  <param name="depth_ir_offset_y" type="double" value="4.0" />
+  <param name="z_offset_mm" type="int" value="0" />
+  <param name="rgb_resolution" type="int" value="2" />
+  <param name="rgb_frequency" type="int" value="30" />
+  <param name="depth_resolution" type="int" value="2" />
+  <param name="depth_frequency" type="int" value="30" />
+  <param name="cur_tilt_angle" type="double" value="0.0" />
+  <param name="tilt_angle" type="double" value="0.0" />
+  <param name="led_option" type="int" value="4" />
+  <param name="rect_rgb_image" type="str" value="Hello World" />
+</node>
+\endverbatim
+

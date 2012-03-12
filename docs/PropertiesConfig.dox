@@ -1,0 +1,22 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~image_mode" : \b [int] Image output mode for the color/grayscale image min: 1, default: 2, max: 9
+- \b "~depth_mode" : \b [int] depth output mode min: 2, default: 2, max: 9
+- \b "~depth_registration" : \b [bool] Depth data registration activated or not min: False, default: False, max: True
+- \b "~data_skip" : \b [int] Skip N images for every image published (rgb/depth/depth_registered/ir) min: 0, default: 0, max: 10
+- \b "~depth_time_offset" : \b [double] depth image time offset in seconds min: -1.0, default: 0.0, max: 1.0
+- \b "~image_time_offset" : \b [double] image time offset in seconds min: -1.0, default: 0.0, max: 1.0
+- \b "~depth_ir_offset_x" : \b [double] X offset between IR and depth images min: -10.0, default: 5.0, max: 10.0
+- \b "~depth_ir_offset_y" : \b [double] Y offset between IR and depth images min: -10.0, default: 4.0, max: 10.0
+- \b "~z_offset_mm" : \b [int] Z coordinate offset in mm min: -50, default: 0, max: 50
+- \b "~rgb_resolution" : \b [int] Specific resolution for RGB camera min: 1, default: 2, max: 4
+- \b "~rgb_frequency" : \b [int] Specific frequency for RGB camera min: 15, default: 30, max: 60
+- \b "~depth_resolution" : \b [int] Specific resolution for Depth camera min: 1, default: 2, max: 4
+- \b "~depth_frequency" : \b [int] Specific frequency for Depth camera min: 15, default: 30, max: 60
+- \b "~cur_tilt_angle" : \b [double] Current real tilt of the camera min: -65.0, default: 0.0, max: 65.0
+- \b "~tilt_angle" : \b [double] Base-camera angle min: -31.0, default: 0.0, max: 31.0
+- \b "~led_option" : \b [int] Led color and blinking mode state  min: 0, default: 4, max: 8
+- \b "~rect_rgb_image" : \b [str] Rgb rectified image min: , default: Hello World, max: 
+

@@ -1,0 +1,5 @@
+string topicName
+int64 nImages
+---
+stereo_msgs/DisparityImage[] images
+

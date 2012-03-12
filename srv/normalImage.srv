@@ -1,0 +1,5 @@
+string topicName
+int64 nImages
+---
+sensor_msgs/Image[] images
+

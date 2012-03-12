@@ -1,0 +1,4 @@
+string topicName
+float64 newValue
+---
+string setAnswer
