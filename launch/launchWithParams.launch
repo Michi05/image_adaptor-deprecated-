@@ -1,47 +1,47 @@
 <launch>
+  <arg name="absolute_ns" default="/" />
+
+  <arg name="main_file_basename" default="img_a_node" />
+
   <arg name="robot_ns" default="robot1" />
   <arg name="pkg_name" default="image_adaptor" />
-  <arg name="node_name" default="img_adaptor" />
+  <arg name="node_name" default="$(arg main_file_basename)" />
   <arg name="pkg_location" default="$(find image_adaptor)" />
 
   <arg name="camera_name" default="kinect1" />
 
   <!-- start the nodes in the 'image_adaptor' namespace -->
   <group ns="$(arg robot_ns)">
-	<!-- Always load driver first! Camera "Kinect1" -->
-    <include file="$(find openni_launch)/launch/openni.launch" >
+	<!-- Always load driver first! Camera "Kinect1"
+    <include file="$(find openni_launch)/launch/openni.launch"> -->
+
+    <include file="$(find image_adaptor)/launch/adaptor_openni.launch">
         <arg name="camera" value="$(arg camera_name)" />
+        <arg name="robot_ns" value="$(arg robot_ns)" />
     </include>
-    <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" ns="$(arg camera_name)"/>
+    <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" ns="$(arg camera_name)" required="true"/>
 
     <!-- Alternative for the node-tag line
 <node launch-prefix="gdb -ex run -<borrarme>-args /usr/bin/python "  ... >  -->
 
 
 
-    <!-- set private parameters -->
-	<!-- TODO: group parameter servers or driver names using "ns" or "group" ?? -->
-    <param name="driver01" value="$(arg camera_name)/driver" />
-    <param name="selfNodeLocation" value="/$(arg robot_ns)/$(arg node_name)/" />
-    <param name="propertyConfigFile" value="$(arg pkg_location)/translation_relative.yaml" />
-    <param name="launchDelayTime" value="10" />
+    <node name="$(arg node_name)" pkg="$(arg pkg_name)" type="$(arg main_file_basename).py" output="screen" required="true">
 
-
-
-    <node name="$(arg node_name)" pkg="$(arg pkg_name)" type="img_a_node.py" output="screen" args="
-driver01==$(arg camera_name)/driver/
-selfNodeLocation==/$(arg robot_ns)/$(arg node_name)/
-propertyConfigFile==$(arg pkg_location)/translation_relative.yaml
-launchDelayTime==10
-">
-
+        <!-- set private parameters -->
+	    <!-- TODO: group parameter servers or driver names using "ns" or "group" ?? -->
+        <param name="driver01" value="$(arg camera_name)/driver/" />
+        <param name="propertyConfigFile" value="$(arg pkg_location)/translation_relative.yaml" />
+        <param name="launchDelayTime" value="20" />
 
 <!-- virtual means that => resolXfreq=mode
         <param name="prop_z_offset_mm" value="$(arg camera_name)/driver/z_offset_mm,int,outParam" />
  -->
+
 <!-- TOPICS:
         <param name="imu" value="/imu,sensor_msgs/Imu,publishedTopic" />
  -->
+
 <!-- WITH boundaries; should I add??:
         <param name="ALTERNATIVE_no_boundariesB" value="$(arg camera_name)/driver/data_skip;int;algo-algo;dynParam" /> -->
                     <!-- if it's not OUTPUT and boundaries are equal; then there is no boundaries -->

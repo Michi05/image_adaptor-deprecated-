@@ -2,7 +2,7 @@
 
 ## Initially needed constants    
 globals()["PACKAGE_NAME"] = 'image_adaptor'
-globals()["NODE_NAME"] = 'img_a_node'
+globals()["NODE_NAME"] = 'img_adaptor'
 globals()["dynParamServer"] = None
 
 import roslib; roslib.load_manifest(PACKAGE_NAME)
@@ -54,7 +54,6 @@ import ast
 # *********************************************
 
 ## Assigning values to constants:
-globals()["namespace"] = rospy.get_namespace()
 globals()["DEFAULT_TIMEOUT"] = 3
 remoteType = {str: String, int: UInt16, float: Float64, bool: Bool}
 kindOfProperty = set(["dynParam", "outParam", "publishedTopic", "subscriberTopic", "topic", "topicName", "virtual"])
@@ -122,7 +121,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         return dynConfiguration
 
     def changeSelfParameters(self, dynConfiguration, falling = False):
-        chgReconf = DynamicReconfigureClient(selfNodeLocation, DEFAULT_TIMEOUT, (lambda *_, **__: None))
+        chgReconf = DynamicReconfigureClient(rospy.get_name(), DEFAULT_TIMEOUT, (lambda *_, **__: None))
         if chgReconf == None:
             return False
         
@@ -138,24 +137,14 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         requestResult = True
         self.avoidRemoteReconf = self.avoidRemoteReconf + 1
         if falling == True:
-            print "rosrun dynamic_reconfigure dynparam set %s %s %s"%(selfNodeLocation, paramName, newValue)
-            os.system("rosrun dynamic_reconfigure dynparam set %s %s %s"%(selfNodeLocation, paramName, newValue))
+            print "rosrun dynamic_reconfigure dynparam set %s %s %s"%(rospy.get_name(), paramName, newValue)
+            os.system("rosrun dynamic_reconfigure dynparam set %s %s %s"%(rospy.get_name(), paramName, newValue))
 ##TODO: reconsider the things above
         else:
             requestResult = chgReconf.update_configuration(newConfig)
         if requestResult != None:
             return True
         return False
-
-    # Topic Handlers
-## This won't be implemented until needed since it could be unnecessary.
-#These would be the methods for handling this interface using topics.
-    def publishTopics(self):
-        # Topics should be published from here in order to give information to subscribers
-        return
-    def runSubscribers(self):
-        # Subscribers can be launched from here in order to read information
-        return
 
 # Generic handlers for the requests:
 # Getter and Setter handlers
@@ -205,7 +194,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         if propertyData[PPTY_KIND] == "dynParam":
             resp1 = driverMgr.setParameter(properties.get_param_basename(propertyData[PPTY_REF]), newValue)
         elif propertyData[PPTY_KIND] == "subscriberTopic" or propertyData[PPTY_KIND] == "topic":
-            driverMgr.sendByTopic(namespace + propertyData[PPTY_REF], newValue, remoteType[valueType])
+            driverMgr.sendByTopic(rospy.get_namespace() + propertyData[PPTY_REF], newValue, remoteType[valueType])
         else:
             resp1 = False
             print "Error: unable to set property %s of kind: '%s'"%(propertyName, propertyData[PPTY_KIND])
@@ -301,9 +290,7 @@ class propertyTranslator:
 ##Constructor
     def __init__(self,configFilename):
         try:
-##TODO: wouldn't it be better...???
-#self.PropertyDictionary = readPropertyConfig(configFilename)
-            self.readPropertyConfig(fileName = configFilename)
+            self.PropertyDictionary = self.readPropertyConfig(fileName = configFilename)
             for elem in self.PropertyDictionary:
                 self.ReversePropDict[self.PropertyDictionary[elem][0]] = elem
                 self.ReversePropDict[self.PropertyDictionary[elem][0].split("/")[-1]] = elem
@@ -317,10 +304,10 @@ class propertyTranslator:
     def reverseInterpret(self, reverseProperty):
         if reverseProperty in self.ReversePropDict:
             result = self.ReversePropDict[reverseProperty]
-        elif str(dynParamServer + "/" + reverseProperty) in self.ReversePropDict:
-            result = self.ReversePropDict[str(dynParamServer + "/" + reverseProperty)]
+        elif str(dynParamServer + reverseProperty) in self.ReversePropDict:
+            result = self.ReversePropDict[str(dynParamServer + reverseProperty)]
         else:
-            print "not %s nor %s found in the property list."%(reverseProperty, str(dynParamServer + "/" + reverseProperty), self.ReversePropDict)
+            print "not %s nor %s found in the property list."%(reverseProperty, str(dynParamServer + reverseProperty), self.ReversePropDict)
             return ""
         return result
 
@@ -352,7 +339,7 @@ class propertyTranslator:
         parameter = parameter[parameter.find('~')+1:]
         try:
             paramAddress = rospy.search_param(parameter)
-            addressRoot = dynParamServer + '/'
+            addressRoot = dynParamServer
             if paramAddress != None and paramAddress.find(addressRoot) == 0:
                     return paramAddress[len(addressRoot):]
         except:
@@ -362,6 +349,7 @@ class propertyTranslator:
     # Receives a fileName in which to read the properties
     #and answers with True if and only if the reading was ok
     def readPropertyConfig(self, fileName):
+        tempDictionary = {}
         fd = open( fileName )
         if fd != None:
             content = fd.readline()
@@ -373,12 +361,12 @@ class propertyTranslator:
                     without_blanks02 = re.sub('( |\t)*,[\t ]*', ',', without_blanks01)
                     dataRead = re.sub('( |\t)*:[\t ]*', ':', without_blanks02).split(':')
                     if len(dataRead) == 2 and dataRead[0] != "" and dataRead[1] != "":
-                        self.PropertyDictionary[dataRead[0]] = dataRead[1].split(',')
+                        tempDictionary[dataRead[0]] = dataRead[1].split(',')
                 content = fd.readline()
         print "_Translation Configuration read from YAML file:"
-        for elem in self.PropertyDictionary:
-            print elem, "\t:\t", self.PropertyDictionary[elem]
-        return True
+        for elem in tempDictionary:
+            print elem, "\t:\t", tempDictionary[elem]
+        return tempDictionary
 
 
     # Method to request the complete list of properties
@@ -396,6 +384,8 @@ class manager3D: ## This is the MANAGER for the layer below
     def __init__(self):
         self.avoidSelfReconf = 0
         try:
+            ## TODO: BE VERY CAREFUL  with this; I don't know if "dynamic servers <=> set_parameters service"
+            rospy.wait_for_service(dynParamServer + "set_parameters") #, timeout=DEFAULT_TIMEOUT)
             self.avoidSelfReconf = self.avoidSelfReconf + 1
             self.dynClient = DynamicReconfigureClient(dynParamServer, self.dynSrvTimeout, self.dynClientCallback)
             print "Driver manager initialized"
@@ -480,9 +470,8 @@ class manager3D: ## This is the MANAGER for the layer below
 
     # Service callers
     def callService(service, arguments, valueType = stringValue):
-#        rospy.init_node('img_adaptor_serviceCaller')
-        rospy.wait_for_service(service)
         try:
+            rospy.wait_for_service(service, timeout = DEFAULT_TIMEOUT * 10)
             remoteFunction = rospy.ServiceProxy(service, valueType)
             resp1 = remoteFunction(arguments)
             print "Service call response is %s"%resp1
@@ -491,7 +480,7 @@ class manager3D: ## This is the MANAGER for the layer below
             print "Service call failed: %s"%(service_exception)
         except Exception as e:
             resp1 = None
-            print "Unknown exception while calling service: %s"%(e)
+            print "Exception while calling service: %s"%(e)
         return resp1
 
  ## '...' class for retransmitting from one topic to another for a certain amount of data or time
@@ -544,9 +533,9 @@ class testClassForRetransmission:
 def getParam(param_name):
     location = rospy.search_param(param_name)
     if location == None:
+        rospy.sleep(10)
         raise Exception("ERROR: Mandatory '%s' parameter not found."%(param_name))
     return rospy.get_param(location)
-#launchDelayTime = int(rospy.get_param(rospy.search_param(selfNodeLocation + "launchDelayTime")))
 
 
 def mainFunction():
@@ -554,27 +543,16 @@ def mainFunction():
 ##TODO: when the launchers are bound add this:    
 # *********************
 #        controlVble = 1
-#        while controlVble < 10:
-#            name = "driver0" + str(controlVble)
+#        while searchParam("~driver" + str(controlVble).zfill(2) != None:
+#            list.add(getParam("~driver" + str(controlVble).zfill(2))
 # *********************
     ## Reading from arguments:
-        globals()["dynParamServer"] = getParam("driver01")
-        globals()["selfNodeLocation"] = getParam("selfNodeLocation")
-        globals()["propertyConfigFile"] = getParam("propertyConfigFile")
-        launchDelayTime = int(getParam("launchDelayTime"))
-        
-        
-        for elem in (propertyConfigFile, selfNodeLocation, dynParamServer):
-            print "Searching param %s."%(elem)
-            if type(elem) != str or propertyConfigFile == "":
-                raise Exception('Unable to read launching arguments')
-            
-        
-        
-        print "Waiting %s..."%(launchDelayTime)
-        rospy.sleep(launchDelayTime)
         print "Initializing node"
-        rospy.init_node(NODE_NAME) ##MICHI TODO: Move this two lines below inside the "try"?
+        rospy.init_node(NODE_NAME)
+
+        globals()["dynParamServer"] = getParam("driver01")
+        globals()["propertyConfigFile"] = getParam("propertyConfigFile")
+
     except Exception as e:
         print "Exception:", e
         sys.exit(0)
@@ -588,12 +566,8 @@ def mainFunction():
             globals()["properties"] = propertyTranslator(propertyConfigFile)
             globals()["ifcNode"] = img_interface_node()
             ## Finally launch everything and wait:
-            ifcNode.listenToRequests()
-            try:
-                print "...Image Adaptor initialized..."
-                rospy.spin()
-            except KeyboardInterrupt:
-                print "Shutting node."
+            globals()["ifcNode"].listenToRequests()
+                
         except KeyboardInterrupt:
             sys.exit(0)
         except:
@@ -603,26 +577,29 @@ def mainFunction():
             try:
         ## If there was any error I delete the objects and begin from scratch
         # I could just use a try/except for each initialization but I don't see real improvement on that
-                del driverMgr
-                del properties
-                del ifcNode
+                del globals()["driverMgr"]
+                del globals()["properties"]
+                del globals()["ifcNode"]
             except:
                 pass
             rospy.sleep(10)
             print "Reinitializing Node"
 #        cv.DestroyAllWindows()
 #            rospy.signal_shutdown("byebye")
+        else:
+            try:
+                print "...Image Adaptor initialized..."
+            except KeyboardInterrupt:
+                print "Shutting node."
+            else:
+                rospy.spin()
     return
 
  ##MICHI TODO: call "start" from this main with a "try" and then a symbolic "stop" maybe?
 if __name__ == '__main__':
-    args = {} #  ast.literal_eval(sys.argv[1])
-    rawArgs = rospy.myargv(argv=sys.argv)
-    for i in rawArgs:
-        line = i.split('==')
-        if len(line) > 1:
-            args[line[0]] = line[1]
     try:
         mainFunction()
     except Exception as e:
         print "WHOLE-SCOPE EXCEPTION - NODE SHUTTING DOWN" ##TODO: I don't like whole-scope try/except blocks
+    finally:
+        rospy.signal_shutdown("testing shutdown")
