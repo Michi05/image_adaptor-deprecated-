@@ -94,9 +94,6 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
 ##MICHI: 14Feb2012
         self.listOf_services['getDispImage'] = rospy.Service('getDispImage', disparityImage, self.getDispImage)
         self.listOf_services['getImage'] = rospy.Service('getImage', normalImage, self.getImage)
-##MICHI: 13Mar2012
-        self.listOf_services['publishDispImage'] = rospy.Service('publishDispImage', requestTopic, self.publishDispImage)
-        self.listOf_services['publishImage'] = rospy.Service('publishImage', requestTopic, self.publishImage)
         
         self.listOf_services['setStrProperty'] = rospy.Service('setStrProperty', setString, self.setStrProperty)
         self.listOf_services['setIntProperty'] = rospy.Service('setIntProperty', setInteger, self.setIntProperty)
@@ -373,7 +370,7 @@ class propertyTranslator:
                     if len(dataRead) == 2 and dataRead[0] != "" and dataRead[1] != "":
                         tempDictionary[dataRead[0]] = dataRead[1].split(',')
                 content = fd.readline()
-        print " Translation Configuration read from YAML file:"
+        print "_Translation Configuration read from YAML file:"
         for elem in tempDictionary:
             print elem, "\t:\t", tempDictionary[elem]
         return tempDictionary
@@ -595,7 +592,7 @@ def mainFunction():
         else:
             try:
                 print "...Image Adaptor initialized..."
-#                driverMgr.retransmitTopic(150, "/robot1/kinect1/camera/depth/disparity", "/robot1/kinect1/alt_camera", DisparityImage)
+                driverMgr.retransmitTopic(150, "/robot1/kinect1/camera/depth/disparity", "/robot1/kinect1/alt_camera", DisparityImage)
             except KeyboardInterrupt:
                 print "Shutting node."
             else:

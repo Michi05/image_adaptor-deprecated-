@@ -1,22 +1,22 @@
 
-#basename   :   ./driver
-image_mode	:	driver/image_mode,int,dynParam
+#basename   :   camera/driver
+image_mode	:	camera/driver/image_mode,int,dynParam
         rgb_resolution	:	resol,int,virtual
         rgb_frequency	:	freq,int,virtual
-depth_mode	:	driver/depth_mode,int,dynParam
+depth_mode	:	camera/driver/depth_mode,int,dynParam
         depth_resolution	:	resol,int,virtual
         depth_frequency	:	freq,int,virtual
-data_skip	:	driver/data_skip,int,dynParam
-z_offset_mm	:	driver/z_offset_mm,int,outParam
+data_skip	:	camera/driver/data_skip,int,dynParam
+z_offset_mm	:	camera/driver/z_offset_mm,int,outParam
 
-depth_registration	:	driver/depth_registration,bool,dynParam
-depth_time_offset	:	driver/depth_time_offset,double,dynParam
-image_time_offset	:	driver/image_time_offset,double,dynParam
+depth_registration	:	camera/driver/depth_registration,bool,dynParam
+depth_time_offset	:	camera/driver/depth_time_offset,double,dynParam
+image_time_offset	:	camera/driver/image_time_offset,double,dynParam
 
-depth_ir_offset_x	:	driver/depth_ir_offset_x,double,dynParam
-depth_ir_offset_y	:	driver/depth_ir_offset_y,double,dynParam
+depth_ir_offset_x	:	camera/driver/depth_ir_offset_x,double,dynParam
+depth_ir_offset_y	:	camera/driver/depth_ir_offset_y,double,dynParam
 
-device_id	:	driver/device_id,string,outParam
+device_id	:	camera/driver/device_id,string,outParam
 
 cur_tilt_angle	:	cur_tilt_angle,std_msgs/Float64,publishedTopic
 tilt_angle	:	tilt_angle,std_msgs/Float16,topic
@@ -50,8 +50,8 @@ rgb_raw	:	rgb/image_raw,sensor_msgs/Image,topicName
 rgb_rect	:	rgb/image_rect,sensor_msgs/Image,topicName
 rgb_rect_color	:	rgb/image_rect_color,sensor_msgs/Image,topicName
 
-ALTERNATIVE_prop_data_skip	:	driver/data_skip;int;0-10;dynParam
-ALTERNATIVE_another_prop	:	driver/data_skip;int;uno,dos,tres;dynParam
-ALTERNATIVE_no_boundariesA	:	driver/data_skip;int;;dynParam
-ALTERNATIVE_no_boundariesB	:	driver/data_skip;int;algo-algo;dynParam
+ALTERNATIVE_prop_data_skip	:	camera/driver/data_skip;int;0-10;dynParam
+ALTERNATIVE_another_prop	:	camera/driver/data_skip;int;uno,dos,tres;dynParam
+ALTERNATIVE_no_boundariesA	:	camera/driver/data_skip;int;;dynParam
+ALTERNATIVE_no_boundariesB	:	camera/driver/data_skip;int;algo-algo;dynParam
 

@@ -1,25 +1,28 @@
 <launch>
-  <arg name="absolute_ns" default="/" />
+  <!-- For now, it is mandatory to include the absolute namespace if different than
+    root "/" because of a problem with the Kinect driver used.
 
+    The namespaces must be terminated with a slash character "/" and only this begins
+    with slash since it is the absolute one.
+    -->
+  <arg name="absolute_namespace" default="/" />
   <arg name="main_file_basename" default="img_a_node" />
-
   <arg name="robot_ns" default="robot1" />
+  <arg name="pkg_location" default="$(find image_adaptor)" /> <!-- I can't use find $pkg_name in every place, so I use this for easier changing -->
   <arg name="pkg_name" default="image_adaptor" />
   <arg name="node_name" default="$(arg main_file_basename)" />
-  <arg name="pkg_location" default="$(find image_adaptor)" />
 
   <arg name="camera_name" default="kinect1" />
 
-  <!-- start the nodes in the 'image_adaptor' namespace -->
-  <group ns="$(arg robot_ns)">
+  <!-- start the nodes in the camera namespace -->
+  <group ns="$(arg camera_name)">
 	<!-- Always load driver first! Camera "Kinect1"
     <include file="$(find openni_launch)/launch/openni.launch"> -->
 
     <include file="$(find image_adaptor)/launch/adaptor_openni.launch">
-        <arg name="camera" value="$(arg camera_name)" />
-        <arg name="robot_ns" value="$(arg robot_ns)" />
+        <arg name="absolute_namespace" value="$(arg absolute_namespace)/$(arg camera_name)/" />
     </include>
-    <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" ns="$(arg camera_name)" required="true"/>
+    <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" required="true"/>
 
     <!-- Alternative for the node-tag line
 <node launch-prefix="gdb -ex run -<borrarme>-args /usr/bin/python "  ... >  -->
@@ -30,9 +33,8 @@
 
         <!-- set private parameters -->
 	    <!-- TODO: group parameter servers or driver names using "ns" or "group" ?? -->
-        <param name="driver01" value="$(arg camera_name)/driver/" />
+        <param name="driver01" value="camera/driver/" />
         <param name="propertyConfigFile" value="$(arg pkg_location)/translation_relative.yaml" />
-        <param name="launchDelayTime" value="20" />
 
 <!-- virtual means that => resolXfreq=mode
         <param name="prop_z_offset_mm" value="$(arg camera_name)/driver/z_offset_mm,int,outParam" />
