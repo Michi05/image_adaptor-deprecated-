@@ -64,6 +64,9 @@ PPTY_TYPE = ppty["type"]
 PPTY_KIND = ppty["kind"]
 
 class img_interface_node: ## This is the LISTENER for the layer ABOVE
+    """The 'img_interface_node' is the class which communicates to the layer above
+    according to this structure. It provides services and dynamic reconfigure server
+    and also publishes topics"""
 ## Static Data
     ## Services
     listOf_services = {}
@@ -95,8 +98,8 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         self.listOf_services['getDispImage'] = rospy.Service('getDispImage', disparityImage, self.getDispImage)
         self.listOf_services['getImage'] = rospy.Service('getImage', normalImage, self.getImage)
 ##MICHI: 13Mar2012
-        self.listOf_services['publishDispImage'] = rospy.Service('publishDispImage', requestTopic, self.publishDispImage)
-        self.listOf_services['publishImage'] = rospy.Service('publishImage', requestTopic, self.publishImage)
+#        self.listOf_services['publishDispImage'] = rospy.Service('publishDispImage', requestTopic, self.publishDispImage)
+#        self.listOf_services['publishImage'] = rospy.Service('publishImage', requestTopic, self.publishImage)
         
         self.listOf_services['setStrProperty'] = rospy.Service('setStrProperty', setString, self.setStrProperty)
         self.listOf_services['setIntProperty'] = rospy.Service('setIntProperty', setInteger, self.setIntProperty)
@@ -292,16 +295,18 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
 
 
 class propertyTranslator:
+    """This 'PropertyTranslator' class is the module to change driver names and paths into
+the ones offered by the interface and the other way around. It stores two dictionaries (for
+both translations) and several methods for translations."""
     ## Data
 ## Watch out: these are static!!
-    PropertyDictionary = {}
-    ReversePropDict = {}    #what if the ReverseDict had only the names and not the properties?
-    property_config_file = None
+    #what if the ReverseDict had only the names and not the properties?
 ##Constructor
     def __init__(self,config_filename):
         try:
-            property_config_file = config_filename
+            self.property_config_file = config_filename
             self.PropertyDictionary = self.readPropertyConfig(file_name = config_filename)
+            self.ReversePropDict = {}
             for elem in self.PropertyDictionary:
                 self.ReversePropDict[self.PropertyDictionary[elem][0]] = elem
                 self.ReversePropDict[self.PropertyDictionary[elem][0].split("/")[-1]] = elem
@@ -387,7 +392,10 @@ class propertyTranslator:
         return properties.get_property_list()
 
 
-class manager3D: ## This is the MANAGER for the layer below
+class manager3D:
+    """'manager3D' is the communication module for handling the low-level driver. That
+    is the manager for the layer below, so all the requests should use this module in
+    order to observe the structure."""
 ## Static Data
     dynSrvTimeout = DEFAULT_TIMEOUT
 ## Constructor
@@ -608,7 +616,6 @@ if __name__ == '__main__':
         basename = sys.argv[0].split('/')[-1]
         if basename == "":
             sys.argv[0].split('/')[-2]
-        print "My name is %s"%(re.sub('(\.py)$', "", basename).replace(".",""))
         mainFunction()
     except Exception as e:
         print "WHOLE-SCOPE EXCEPTION - NODE SHUTTING DOWN" ##TODO: I don't like whole-scope try/except blocks
