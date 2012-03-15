@@ -42,6 +42,7 @@ CMAKE_BINARY_DIR = /home/super/ros_workspace/image_adaptor/build
 CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 
 ../src/image_adaptor/srv/__init__.py: ../src/image_adaptor/srv/_disparityImage.py
+../src/image_adaptor/srv/__init__.py: ../src/image_adaptor/srv/_requestTopic.py
 ../src/image_adaptor/srv/__init__.py: ../src/image_adaptor/srv/_setBoolean.py
 ../src/image_adaptor/srv/__init__.py: ../src/image_adaptor/srv/_setString.py
 ../src/image_adaptor/srv/__init__.py: ../src/image_adaptor/srv/_setInteger.py
@@ -53,7 +54,7 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/__init__.py: ../src/image_adaptor/srv/_normalImage.py
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/__init__.py"
-	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --initpy /home/super/ros_workspace/image_adaptor/srv/disparityImage.srv /home/super/ros_workspace/image_adaptor/srv/setBoolean.srv /home/super/ros_workspace/image_adaptor/srv/setString.srv /home/super/ros_workspace/image_adaptor/srv/setInteger.srv /home/super/ros_workspace/image_adaptor/srv/floatValue.srv /home/super/ros_workspace/image_adaptor/srv/setFloat.srv /home/super/ros_workspace/image_adaptor/srv/stringValue.srv /home/super/ros_workspace/image_adaptor/srv/intValue.srv /home/super/ros_workspace/image_adaptor/srv/booleanValue.srv /home/super/ros_workspace/image_adaptor/srv/normalImage.srv
+	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --initpy /home/super/ros_workspace/image_adaptor/srv/disparityImage.srv /home/super/ros_workspace/image_adaptor/srv/requestTopic.srv /home/super/ros_workspace/image_adaptor/srv/setBoolean.srv /home/super/ros_workspace/image_adaptor/srv/setString.srv /home/super/ros_workspace/image_adaptor/srv/setInteger.srv /home/super/ros_workspace/image_adaptor/srv/floatValue.srv /home/super/ros_workspace/image_adaptor/srv/setFloat.srv /home/super/ros_workspace/image_adaptor/srv/stringValue.srv /home/super/ros_workspace/image_adaptor/srv/intValue.srv /home/super/ros_workspace/image_adaptor/srv/booleanValue.srv /home/super/ros_workspace/image_adaptor/srv/normalImage.srv
 
 ../src/image_adaptor/srv/_disparityImage.py: ../srv/disparityImage.srv
 ../src/image_adaptor/srv/_disparityImage.py: /opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py
@@ -110,6 +111,57 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_disparityImage.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/disparityImage.srv
 
+../src/image_adaptor/srv/_requestTopic.py: ../srv/requestTopic.srv
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/ros/core/roslib/scripts/gendeps
+../src/image_adaptor/srv/_requestTopic.py: ../manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/ros/tools/rospack/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/ros/core/roslib/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/messages/std_msgs/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/ros/core/rosbuild/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/ros/core/roslang/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/utilities/cpp_common/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/clients/cpp/roscpp_traits/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/utilities/rostime/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/clients/cpp/roscpp_serialization/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/utilities/xmlrpcpp/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rosconsole/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/messages/rosgraph_msgs/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/clients/cpp/roscpp/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/clients/rospy/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/ros/tools/rosclean/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rosgraph/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rosparam/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rosmaster/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rosout/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/roslaunch/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/ros/tools/rosunit/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rostest/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/topic_tools/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rosbag/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rosmsg/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rostopic/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rosservice/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/driver_common/dynamic_reconfigure/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/rosbagmigration/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/common_msgs/geometry_msgs/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/manifest.xml
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/ros_comm/tools/topic_tools/srv_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/driver_common/dynamic_reconfigure/msg_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/driver_common/dynamic_reconfigure/srv_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/common_msgs/geometry_msgs/msg_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
+../src/image_adaptor/srv/_requestTopic.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_requestTopic.py"
+	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/requestTopic.srv
+
 ../src/image_adaptor/srv/_setBoolean.py: ../srv/setBoolean.srv
 ../src/image_adaptor/srv/_setBoolean.py: /opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py
 ../src/image_adaptor/srv/_setBoolean.py: /opt/ros/electric/ros/core/roslib/scripts/gendeps
@@ -157,7 +209,7 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/_setBoolean.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
 ../src/image_adaptor/srv/_setBoolean.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
 ../src/image_adaptor/srv/_setBoolean.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_setBoolean.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/setBoolean.srv
 
@@ -208,7 +260,7 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/_setString.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
 ../src/image_adaptor/srv/_setString.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
 ../src/image_adaptor/srv/_setString.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_setString.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/setString.srv
 
@@ -259,7 +311,7 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/_setInteger.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
 ../src/image_adaptor/srv/_setInteger.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
 ../src/image_adaptor/srv/_setInteger.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_5)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_6)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_setInteger.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/setInteger.srv
 
@@ -310,7 +362,7 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/_floatValue.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
 ../src/image_adaptor/srv/_floatValue.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
 ../src/image_adaptor/srv/_floatValue.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_6)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_7)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_floatValue.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/floatValue.srv
 
@@ -361,7 +413,7 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/_setFloat.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
 ../src/image_adaptor/srv/_setFloat.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
 ../src/image_adaptor/srv/_setFloat.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_7)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_8)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_setFloat.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/setFloat.srv
 
@@ -412,7 +464,7 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/_stringValue.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
 ../src/image_adaptor/srv/_stringValue.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
 ../src/image_adaptor/srv/_stringValue.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_8)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_9)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_stringValue.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/stringValue.srv
 
@@ -463,7 +515,7 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/_intValue.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
 ../src/image_adaptor/srv/_intValue.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
 ../src/image_adaptor/srv/_intValue.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_9)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_10)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_intValue.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/intValue.srv
 
@@ -514,7 +566,7 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/_booleanValue.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
 ../src/image_adaptor/srv/_booleanValue.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
 ../src/image_adaptor/srv/_booleanValue.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_10)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_11)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_booleanValue.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/booleanValue.srv
 
@@ -567,13 +619,14 @@ CMakeFiles/ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ../src/image_adaptor/srv/_normalImage.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/msg_gen/generated
 ../src/image_adaptor/srv/_normalImage.py: /opt/ros/electric/stacks/common_msgs/sensor_msgs/srv_gen/generated
 ../src/image_adaptor/srv/_normalImage.py: /opt/ros/electric/stacks/common_msgs/stereo_msgs/msg_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_11)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles $(CMAKE_PROGRESS_12)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../src/image_adaptor/srv/_normalImage.py"
 	/opt/ros/electric/stacks/ros_comm/clients/rospy/scripts/gensrv_py.py --noinitpy /home/super/ros_workspace/image_adaptor/srv/normalImage.srv
 
 ROSBUILD_gensrv_py: CMakeFiles/ROSBUILD_gensrv_py
 ROSBUILD_gensrv_py: ../src/image_adaptor/srv/__init__.py
 ROSBUILD_gensrv_py: ../src/image_adaptor/srv/_disparityImage.py
+ROSBUILD_gensrv_py: ../src/image_adaptor/srv/_requestTopic.py
 ROSBUILD_gensrv_py: ../src/image_adaptor/srv/_setBoolean.py
 ROSBUILD_gensrv_py: ../src/image_adaptor/srv/_setString.py
 ROSBUILD_gensrv_py: ../src/image_adaptor/srv/_setInteger.py

@@ -7,6 +7,7 @@ FILE(REMOVE_RECURSE
   "../srv_gen"
   "CMakeFiles/ROSBUILD_gensrv_cpp"
   "../srv_gen/cpp/include/image_adaptor/disparityImage.h"
+  "../srv_gen/cpp/include/image_adaptor/requestTopic.h"
   "../srv_gen/cpp/include/image_adaptor/setBoolean.h"
   "../srv_gen/cpp/include/image_adaptor/setString.h"
   "../srv_gen/cpp/include/image_adaptor/setInteger.h"

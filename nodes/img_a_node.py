@@ -87,8 +87,8 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         return
 
 ##Methods:
-#   Main function in order to remain listening
     def listenToRequests(self):
+        """Main service creator method in order to remain listening"""
         self.listOf_services['getStringProperty'] = rospy.Service('getStringProperty', stringValue, self.getStringProperty)
         self.listOf_services['getIntProperty'] = rospy.Service('getIntProperty', intValue, self.getIntProperty)
         self.listOf_services['getFloatProperty'] = rospy.Service('getFloatProperty', floatValue, self.getFloatProperty)
@@ -98,8 +98,8 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         self.listOf_services['getDispImage'] = rospy.Service('getDispImage', disparityImage, self.getDispImage)
         self.listOf_services['getImage'] = rospy.Service('getImage', normalImage, self.getImage)
 ##MICHI: 13Mar2012
-#        self.listOf_services['publishDispImage'] = rospy.Service('publishDispImage', requestTopic, self.publishDispImage)
-#        self.listOf_services['publishImage'] = rospy.Service('publishImage', requestTopic, self.publishImage)
+        self.listOf_services['publishDispImages'] = rospy.Service('publishDispImages', requestTopic, self.publishDispImages)
+        self.listOf_services['publishImages'] = rospy.Service('publishImages', requestTopic, self.publishImages)
         
         self.listOf_services['setStrProperty'] = rospy.Service('setStrProperty', setString, self.setStrProperty)
         self.listOf_services['setIntProperty'] = rospy.Service('setIntProperty', setInteger, self.setIntProperty)
@@ -107,16 +107,16 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         self.listOf_services['setBoolProperty'] = rospy.Service('setBoolProperty', setBoolean, self.setBoolProperty)
         print "Ready to answer service requests."
 
-    # Dynamic Reconfigure handler
-    #Must return a configuration in the same format as received
     def dynServerCallback(self, dynConfiguration, levelCode):
+        """ Dynamic Reconfigure handler
+        Must return a configuration in the same format as received """
         if self.avoidRemoteReconf > 0:
             print "LOCAL config was changed by self"
             self.avoidRemoteReconf = self.avoidRemoteReconf - 1
         elif levelCode != 0:
             print ("LOCAL configuration changed.".rjust(100, '_'))
             for elem in dynConfiguration:
-                if properties.canSet(elem):
+                if translator.canSet(elem):
                     success = self.setAnyProperty(elem, dynConfiguration[elem])
                     if success == False or success == None:
                         print '|__> ...error... while setting property "%s"'%elem
@@ -134,7 +134,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         
         newConfig = {}
         for elem in dynConfiguration:
-            paramName = properties.reverseInterpret(elem)
+            paramName = translator.reverseInterpret(elem)
             if paramName != "":
                 newValue = dynConfiguration[elem]
                 newConfig[paramName] = newValue
@@ -157,7 +157,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
 # Getter and Setter handlers
 	# Generic setter in order to redirect to the appropriate method
     def setAnyProperty(self, propertyName, newValue):
-        propertyData = properties.interpret(propertyName)
+        propertyData = translator.interpret(propertyName)
         if propertyData == None:
             return None
         #else:
@@ -188,7 +188,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         return self.setFixedTypeProperty(setStrMsg.topicName, setStrMsg.newValue, bool)
 
     def setFixedTypeProperty(self, propertyName, newValue, valueType):
-        propertyData = properties.interpret(propertyName)
+        propertyData = translator.interpret(propertyName)
         if propertyData == None:
             print "Error: trying to set not found property."
             return None
@@ -198,13 +198,13 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         
         print "PropertyKind = ", propertyData[PPTY_KIND]
         print "Path: "
-        print properties.get_param_basename(propertyData[PPTY_REF])
+        print translator.get_param_basename(propertyData[PPTY_REF])
         print rospy.get_namespace() + propertyData[PPTY_REF]
-        print "Basename: ", properties.get_param_basename(propertyData[PPTY_REF])
+        print "Basename: ", translator.get_param_basename(propertyData[PPTY_REF])
         #else:
         resp1 = True
         if propertyData[PPTY_KIND] == "dynParam":
-            resp1 = driverMgr.setParameter(properties.get_param_basename(propertyData[PPTY_REF]), newValue)
+            resp1 = driverMgr.setParameter(translator.get_param_basename(propertyData[PPTY_REF]), newValue)
         elif propertyData[PPTY_KIND] == "subscriberTopic" or propertyData[PPTY_KIND] == "topic":
             driverMgr.sendByTopic(rospy.get_namespace() + propertyData[PPTY_REF], newValue, remoteType[valueType])
         else:
@@ -216,7 +216,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
 # Getter and getter handlers
     # Generic setter in order to redirect to the appropriate method
     def getAnyProperty(self, propertyName):
-        propertyData = properties.interpret(propertyName)
+        propertyData = translator.interpret(propertyName)
         if propertyData == None:
             return None
         #else:
@@ -255,7 +255,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         while len(respImages) < srvMsg.nImages:
             respImages.append(self.getFixedTypeProperty(srvMsg.topicName, None))
 ##****************************** Temporary for Testing: ******************************
-        propertyData = properties.interpret(srvMsg.topicName)
+        propertyData = translator.interpret(srvMsg.topicName)
         for image in respImages:
             driverMgr.sendByTopic("testImages", image, Image)
             rospy.Rate(10).sleep()
@@ -265,12 +265,12 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
 ##Watch out; setStrMsg.topicName is from setStrMsg.srv and the ppty kind is called the same
 
     def getFixedTypeProperty(self, propertyName, valueType):
-        propertyData = properties.interpret(propertyName)
+        propertyData = translator.interpret(propertyName)
         if propertyData == None:
             return None
         #else:
         if propertyData[PPTY_KIND] == "dynParam" or propertyData[PPTY_KIND] == "outParam":
-            resp1 = driverMgr.getParameter(properties.get_param_basename(propertyData[PPTY_REF]))
+            resp1 = driverMgr.getParameter(translator.get_param_basename(propertyData[PPTY_REF]))
         elif propertyData[PPTY_KIND] == "publishedTopic" or propertyData[PPTY_KIND] == "topic":
             resp1 = driverMgr.getTopic(propertyData[PPTY_REF], valueType)
         elif propertyData[PPTY_KIND] == "topicName":
@@ -291,13 +291,26 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
 
     # Method to request the complete list of properties
     def get_property_list(self):
-        return properties.get_property_list()
+        return translator.get_property_list()
+    
+    # Methods related to requesting topics to publish
+    def publishDispImages(self, srvMsg):
+        topicPath = translator.getTopicPath(srvMsg.sourceTopic)
+        driverMgr.retransmitTopic(srvMsg.nImages, topicPath, srvMsg.responseTopic, DisparityImage)
+        "%s images sent from %s topic to %s."%(srvMsg.nImages, srvMsg.sourceTopic, srvMsg.responseTopic)
+        return "%s images sent from %s topic to %s."%(srvMsg.nImages, srvMsg.sourceTopic, srvMsg.responseTopic)
+    
+    def publishImages(self, srvMsg):
+        topicPath = translator.getTopicPath(srvMsg.sourceTopic)
+        driverMgr.retransmitTopic(srvMsg.nImages, topicPath, srvMsg.responseTopic, Image)
+        "%s images sent from %s topic to %s."%(srvMsg.nImages, srvMsg.sourceTopic, srvMsg.responseTopic)
+        return "%s images sent from %s topic to %s."%(srvMsg.nImages, srvMsg.sourceTopic, srvMsg.responseTopic)
 
 
 class propertyTranslator:
     """This 'PropertyTranslator' class is the module to change driver names and paths into
 the ones offered by the interface and the other way around. It stores two dictionaries (for
-both translations) and several methods for translations."""
+both translations) and several methods for translating."""
     ## Data
 ## Watch out: these are static!!
     #what if the ReverseDict had only the names and not the properties?
@@ -328,7 +341,6 @@ both translations) and several methods for translations."""
         return result
 
     def canSet(self, propertyName):
-        
         kindsToSet = set (["dynParam", "subscriberTopic", "topic"])
         if propertyName in self.PropertyDictionary:
             return ( self.PropertyDictionary[propertyName][PPTY_KIND] in kindsToSet )
@@ -382,6 +394,11 @@ both translations) and several methods for translations."""
         for elem in tempDictionary:
             print elem, "\t:\t", tempDictionary[elem]
         return tempDictionary
+    
+    def getTopicPath(self, topicName):
+        if manager3D.topicExists(topicName):
+            return topicName
+        return self.interpret(topicName)
 
 
     # Method to request the complete list of properties
@@ -389,7 +406,7 @@ both translations) and several methods for translations."""
         paramList = {}
         for elem in PropertyDictionary:
             paramList[elem] = PropertyDictionary[elem][0]
-        return properties.get_property_list()
+        return translator.get_property_list()
 
 
 class manager3D:
@@ -455,9 +472,11 @@ class manager3D:
         pub.publish(value)
         return True
 
-        # 'retransmitTopic' is meant to be executed in a different thread in order
-        # to repeat a number of messages received from a topic in another one.
     def retransmitTopic(self, times, source_topic, output_topic, data_type = UInt16):
+        """ 'retransmitTopic' is meant to be executed in a different thread in order
+        to repeat a number of messages received from a topic to another one. """
+        # TODO: it should use the interface to send the messages in order to be according to the structure
+        # but be careful with moving too much the images or the throughput will die...
         if source_topic in rospy.get_published_topics(namespace='/') == False:
             print "Unable to find %s topic in %s in order to retransmit it"%(source_topic, rospy.get_published_topics(namespace='/'))
             return False
@@ -499,6 +518,14 @@ class manager3D:
             resp1 = None
             print "Exception while calling service: %s"%(e)
         return resp1
+    
+    # Static utility methods
+    @staticmethod
+    def topicExists(topicName):
+        for i in rospy.get_published_topics():
+            if topicName in i:
+                return True
+        return False
 
  ## '...' class for retransmitting from one topic to another for a certain amount of data or time
  # Objects from this class should be instantiated or executed in separated threads to avoid
@@ -577,7 +604,7 @@ def mainFunction():
 ## Initializing the 3 layers from the lower one
 #since each one shouldn't ever depend on the ones above
             globals()["driverMgr"] = manager3D()
-            globals()["properties"] = propertyTranslator(getParam(PROP_CONFIG_FILENAME))
+            globals()["translator"] = propertyTranslator(getParam(PROP_CONFIG_FILENAME))
             globals()["ifcNode"] = img_interface_node()
             ## Finally launch everything and wait:
             globals()["ifcNode"].listenToRequests()
@@ -592,7 +619,7 @@ def mainFunction():
         ## If there was any error I delete the objects and begin from scratch
         # I could just use a try/except for each initialization but I don't see real improvement on that
                 del globals()["driverMgr"]
-                del globals()["properties"]
+                del globals()["translator"]
                 del globals()["ifcNode"]
             except:
                 pass
@@ -603,7 +630,6 @@ def mainFunction():
         else:
             try:
                 print "...Image Adaptor initialized..."
-#                driverMgr.retransmitTopic(150, "/robot1/kinect1/camera/depth/disparity", "/robot1/kinect1/alt_camera", DisparityImage)
             except KeyboardInterrupt:
                 print "Shutting node."
             else:

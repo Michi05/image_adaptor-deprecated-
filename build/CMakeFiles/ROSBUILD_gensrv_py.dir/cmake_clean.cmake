@@ -8,6 +8,7 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/ROSBUILD_gensrv_py"
   "../src/image_adaptor/srv/__init__.py"
   "../src/image_adaptor/srv/_disparityImage.py"
+  "../src/image_adaptor/srv/_requestTopic.py"
   "../src/image_adaptor/srv/_setBoolean.py"
   "../src/image_adaptor/srv/_setString.py"
   "../src/image_adaptor/srv/_setInteger.py"

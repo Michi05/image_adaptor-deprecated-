@@ -8,6 +8,8 @@
   :components ((:file "_package")
     (:file "disparityImage" :depends-on ("_package_disparityImage"))
     (:file "_package_disparityImage" :depends-on ("_package"))
+    (:file "requestTopic" :depends-on ("_package_requestTopic"))
+    (:file "_package_requestTopic" :depends-on ("_package"))
     (:file "setBoolean" :depends-on ("_package_setBoolean"))
     (:file "_package_setBoolean" :depends-on ("_package"))
     (:file "setString" :depends-on ("_package_setString"))

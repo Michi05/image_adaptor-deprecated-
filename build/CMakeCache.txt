@@ -143,8 +143,8 @@ CMAKE_SKIP_RPATH:BOOL=NO
 //Path to a program.
 CMAKE_STRIP:FILEPATH=/usr/bin/strip
 
-//The CMake toolchain file
-CMAKE_TOOLCHAIN_FILE:FILEPATH=/opt/ros/electric/ros/core/rosbuild/rostoolchain.cmake
+//No help, variable specified on the command line.
+CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=/opt/ros/electric/ros/core/rosbuild/rostoolchain.cmake
 
 //If true, cmake will use relative paths in makefiles and projects.
 CMAKE_USE_RELATIVE_PATHS:BOOL=OFF
@@ -166,6 +166,9 @@ LIBRARY_OUTPUT_PATH:PATH=
 
 //Path to a file.
 PROJECTCONFIG:FILEPATH=PROJECTCONFIG-NOTFOUND
+
+//Path to a program.
+PYTHON_EXECUTABLE:FILEPATH=/usr/bin/python2.6
 
 //Value Computed by CMake
 Project_BINARY_DIR:STATIC=/home/super/ros_workspace/image_adaptor/build
@@ -313,6 +316,10 @@ CMAKE_UNAME:INTERNAL=/bin/uname
 CMAKE_USE_RELATIVE_PATHS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding PythonInterp
+FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp:INTERNAL=[/usr/bin/python2.6]
+//ADVANCED property for variable: PYTHON_EXECUTABLE
+PYTHON_EXECUTABLE-ADVANCED:INTERNAL=1
 _rosbuild_EXPORTS:INTERNAL=
 _rosbuild_cached_flag_time:INTERNAL=1329304335.63
 _roslang_LANGS:INTERNAL=roslisp;rospy;roscpp

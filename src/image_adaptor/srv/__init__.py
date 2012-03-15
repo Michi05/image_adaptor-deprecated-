@@ -4,6 +4,7 @@ from ._setString import *
 from ._floatValue import *
 from ._disparityImage import *
 from ._intValue import *
+from ._requestTopic import *
 from ._setInteger import *
 from ._stringValue import *
 from ._booleanValue import *
