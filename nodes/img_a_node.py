@@ -1,14 +1,43 @@
 #!/usr/bin/env python
 
-## Initially needed constants    
+"""The following code implements an Adaptor Interface Node written in Python for Robot Operating System.
+This module is meant to provide communication between any application able to communicate with this node
+and any camera device drivers with the appropriate file configuration in the "translation.yaml" file.
+"""
+
+
+
+###############################################################################
+##  *****     *****    Initially needed constants    *****     *****
+###############################################################################
 globals()["PROP_CONFIG_FILENAME"] = "propertyConfigFile"
 globals()["PACKAGE_NAME"] = 'image_adaptor'
 globals()["NODE_NAME"] = 'img_adaptor'
 globals()["dynParamServer"] = None
 
+
+
+###############################################################################
+##  *****     *****    External modules to import    *****     *****
+###############################################################################
+# ****   Standard Python Utility Modules
+#==============================================================================
 import roslib; roslib.load_manifest(PACKAGE_NAME)
 import rospy
 import sys
+# March12 - For argument evaluation:
+import ast
+# February02 - Regular expressions
+import re
+# February14 - For line commands:
+#os.system("rosrun dynamic_reconfigure...)
+import os
+
+
+
+###############################################################################
+# ****   ROS-specific objects and definitions to import
+#==============================================================================
 
 #from dynamic_reconfigure.encoding import Config as dynReconfConfig
 # January23 - Including services
@@ -20,17 +49,13 @@ from std_msgs.msg import *
 from dynamic_reconfigure.client import Client as DynamicReconfigureClient
 from dynamic_reconfigure.server import Server as DynamicReconfigureServer
 from image_adaptor.cfg import PropertiesConfig
-# February02 - Regular expressions
-import re
-# February14 - For line commands:
-#os.system("rosrun dynamic_reconfigure...)
-import os
+# February14
 from stereo_msgs.msg import *
 from sensor_msgs.msg import *
-# March12 - For argument evaluation:
-import ast
 
-# # # Self agreement:
+
+
+# # # Self agreement *** ( Not being followed anymore by the moment ) ***
         # "None" values mean that some Error was already reported
         # "False", negative or empty strings (depending on the place) mean that there was an error but still unknown
     #Reasons:
@@ -54,7 +79,14 @@ import ast
 #then there are unexpected reconfigures, ergo, they don't avoid handling
 # *********************************************
 
-## Assigning values to constants:
+
+
+###############################################################################
+##  *****     *****    Beginning of the executable code    *****     *****
+###############################################################################
+# ****   Assigning values to "constants":
+#==============================================================================
+
 globals()["DEFAULT_TIMEOUT"] = 3
 remoteType = {str: String, int: UInt16, float: Float64, bool: Bool}
 kindOfProperty = set(["dynParam", "outParam", "publishedTopic", "subscriberTopic", "topic", "topicName", "virtual"])
@@ -63,15 +95,35 @@ PPTY_REF = ppty["reference"]
 PPTY_TYPE = ppty["type"]
 PPTY_KIND = ppty["kind"]
 
+
+
+
+
+
+###############################################################################
+##  *****     *****    img_interface_node Class    *****     *****
+###############################################################################
+
 class img_interface_node: ## This is the LISTENER for the layer ABOVE
     """The 'img_interface_node' is the class which communicates to the layer above
     according to this structure. It provides services and dynamic reconfigure server
-    and also publishes topics"""
-## Static Data
-    ## Services
+    and also publishes topics."""
+
+
+
+###############################################
+##  *****     Static Data Members     *****
+###############################################
+# ****   Services provided to the above layer
+#==================================================
     listOf_services = {}
 
-## Constructor
+
+
+###############################################
+##  *****     Constructor Method     *****
+###############################################
+
     def __init__(self):
         self.avoidRemoteReconf = 0
         try:
@@ -86,9 +138,18 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
             raise
         return
 
-##Methods:
+
+
+
+
+###################################################
+##  *****     General Purpouse Methods     *****
+###################################################
+# ****   Launch services for receiving requests
+#==================================================
+
     def listenToRequests(self):
-        """Main service creator method in order to remain listening"""
+        """Main service creator method in order to remain listening."""
         self.listOf_services['getStringProperty'] = rospy.Service('getStringProperty', stringValue, self.getStringProperty)
         self.listOf_services['getIntProperty'] = rospy.Service('getIntProperty', intValue, self.getIntProperty)
         self.listOf_services['getFloatProperty'] = rospy.Service('getFloatProperty', floatValue, self.getFloatProperty)
@@ -107,9 +168,16 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         self.listOf_services['setBoolProperty'] = rospy.Service('setBoolProperty', setBoolean, self.setBoolProperty)
         print "Ready to answer service requests."
 
+
+
+
+###################################################
+# ****   Dynamic Reconfigure related methods
+#==================================================
+
     def dynServerCallback(self, dynConfiguration, levelCode):
-        """ Dynamic Reconfigure handler
-        Must return a configuration in the same format as received """
+        """Dynamic Reconfigure handler
+        Must return a configuration in the same format as received."""
         if self.avoidRemoteReconf > 0:
             print "LOCAL config was changed by self"
             self.avoidRemoteReconf = self.avoidRemoteReconf - 1
@@ -153,10 +221,16 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
             return True
         return False
 
-# Generic handlers for the requests:
-# Getter and Setter handlers
-	# Generic setter in order to redirect to the appropriate method
+
+
+
+
+###################################################
+# ****   Generic handlers for getting and setting parameters
+#==================================================
+
     def setAnyProperty(self, propertyName, newValue):
+        """Generic setter in order to redirect to the appropriate method."""
         propertyData = translator.interpret(propertyName)
         if propertyData == None:
             return None
@@ -177,7 +251,10 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
             return None
         return self.setFixedTypeProperty(propertyName, newValue, valueType)
 
-    #Specific fixed type property setters
+
+	####################################
+	# Specific fixed type property setters
+	#===================================
     def setStrProperty(self, setStrMsg):
         return self.setFixedTypeProperty(setStrMsg.topicName, setStrMsg.newValue, str)
     def setIntProperty(self, setIntMsg):
@@ -307,20 +384,38 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         return "%s images sent from %s topic to %s."%(srvMsg.nImages, srvMsg.sourceTopic, srvMsg.responseTopic)
 
 
+
+
+
+
+
+###############################################################################
+##  *****     *****    propertyTranslator Class    *****     *****
+###############################################################################
+
 class propertyTranslator:
     """This 'PropertyTranslator' class is the module to change driver names and paths into
 the ones offered by the interface and the other way around. It stores two dictionaries (for
 both translations) and several methods for translating."""
-    ## Data
-## Watch out: these are static!!
-    #what if the ReverseDict had only the names and not the properties?
-##Constructor
+
+
+###############################################
+##  *****     Static Data Members     *****
+###############################################
+
+## Empty at this time
+
+
+###############################################
+##  *****     Constructor Method     *****
+###############################################
     def __init__(self,config_filename):
         try:
             self.property_config_file = config_filename
             self.PropertyDictionary = self.readPropertyConfig(file_name = config_filename)
             self.ReversePropDict = {}
             for elem in self.PropertyDictionary:
+#what if this had only the names and not the properties?
                 self.ReversePropDict[self.PropertyDictionary[elem][0]] = elem
                 self.ReversePropDict[self.PropertyDictionary[elem][0].split("/")[-1]] = elem
             print "Property configuration loaded"
@@ -329,7 +424,26 @@ both translations) and several methods for translating."""
             raise
         return
 
-##Methods
+
+
+
+###################################################
+##  *****     General Purpouse Methods     *****
+###################################################
+# ****   Interpret and Reverse interpret
+#==================================================
+
+    def interpret(self, propertyName): # TODO: maybe translate is a better name?
+        """Receives the fixed name of the property and
+        translates it into the needed data to read it."""
+        if propertyName in self.PropertyDictionary:
+            resp1 = self.PropertyDictionary[propertyName]
+#        dataString = rospy.get_param(rospy.search_param(propertyName))
+        else:
+            print "Property '%s' not found."%propertyName
+            resp1 = None
+        return resp1
+
     def reverseInterpret(self, reverseProperty):
         if reverseProperty in self.ReversePropDict:
             result = self.ReversePropDict[reverseProperty]
@@ -340,42 +454,15 @@ both translations) and several methods for translating."""
             return ""
         return result
 
-    def canSet(self, propertyName):
-        kindsToSet = set (["dynParam", "subscriberTopic", "topic"])
-        if propertyName in self.PropertyDictionary:
-            return ( self.PropertyDictionary[propertyName][PPTY_KIND] in kindsToSet )
-        return False
-    def canGet(self, propertyName):
-        kindsToGet = set (["dynParam", "outParam", "publishedTopic", "topic"])
-        if propertyName in self.PropertyDictionary:
-            return ( self.PropertyDictionary[propertyName][PPTY_KIND] in kindsToSet )
-        return False
-
-    # Receives the fixed name of the property and
-    #translates it into the needed data to read it
-    def interpret(self, propertyName): # or translate? which is better name? (A)
-        if propertyName in self.PropertyDictionary:
-            resp1 = self.PropertyDictionary[propertyName]
-#        dataString = rospy.get_param(rospy.search_param(propertyName))
-        else:
-            print "Property '%s' not found."%propertyName
-            resp1 = None
-        return resp1
-
-    def get_param_basename(self, parameter):
-        if len(parameter) < 1:
-            return ""
-        if len(parameter.split("/")[-1]) > 0:
-            parameter = parameter.split("/")[-1]
-        else:
-            parameter = parameter.split("/")[-2]
-        # Cleaning '~' in private names
-        parameter = parameter[parameter.find('~')+1:]
-        return parameter
     
-    # Receives a file_name in which to read the properties
-    #and answers with True if and only if the reading was ok
+
+###################################################
+# ****   Method for loading property config
+#==================================================
+
     def readPropertyConfig(self, file_name):
+        """This method receives a file_name in which to read the properties
+        and answers with True if and only if the reading was ok."""
         tempDictionary = {}
         fd = open( file_name )
         if fd != None:
@@ -394,28 +481,71 @@ both translations) and several methods for translating."""
         for elem in tempDictionary:
             print elem, "\t:\t", tempDictionary[elem]
         return tempDictionary
+
+
+
+###################################################
+# ****   Properties Utility Methods
+#==================================================
+
+    def canSet(self, propertyName):
+        kindsToSet = set (["dynParam", "subscriberTopic", "topic"])
+        if propertyName in self.PropertyDictionary:
+            return ( self.PropertyDictionary[propertyName][PPTY_KIND] in kindsToSet )
+        return False
+    def canGet(self, propertyName):
+        kindsToGet = set (["dynParam", "outParam", "publishedTopic", "topic"])
+        if propertyName in self.PropertyDictionary:
+            return ( self.PropertyDictionary[propertyName][PPTY_KIND] in kindsToSet )
+        return False
+
+    def get_param_basename(self, parameter):
+        if len(parameter) < 1:
+            return ""
+        if len(parameter.split("/")[-1]) > 0:
+            parameter = parameter.split("/")[-1]
+        else:
+            parameter = parameter.split("/")[-2]
+        # Cleaning '~' in private names
+        parameter = parameter[parameter.find('~')+1:]
+        return parameter
     
     def getTopicPath(self, topicName):
         if manager3D.topicExists(topicName):
             return topicName
         return self.interpret(topicName)
 
-
-    # Method to request the complete list of properties
     def get_property_list(self):
+        """Method to request the complete list of properties."""
         paramList = {}
         for elem in PropertyDictionary:
             paramList[elem] = PropertyDictionary[elem][0]
         return translator.get_property_list()
 
 
+
+
+
+
+###############################################################################
+##  *****     *****    manager3D Class    *****     *****
+###############################################################################
+
 class manager3D:
-    """'manager3D' is the communication module for handling the low-level driver. That
+    """Communication module class for handling the low-level driver. That
     is the manager for the layer below, so all the requests should use this module in
     order to observe the structure."""
-## Static Data
+
+
+###############################################
+##  *****     Static Data Members     *****
+###############################################
     dynSrvTimeout = DEFAULT_TIMEOUT
-## Constructor
+
+
+###############################################
+##  *****     Constructor Method     *****
+###############################################
     def __init__(self):
         self.avoidSelfReconf = 0
         try:
@@ -430,8 +560,13 @@ class manager3D:
             raise
         return
 
-## Getters and Setters
-    # Parameter getters and setters for any type
+
+
+###################################################
+##  *****     Getter and Setter Methods     *****
+###################################################
+# ****   Parameter getters and setters for any type
+#==================================================
     def getParameter(self, paramName):
         if self.dynClient == None:
             return None
@@ -454,7 +589,10 @@ class manager3D:
             ifcNode.changeSelfParameters(newConfig)
         return False
 
-    # Topic getter for different types
+
+###################################################
+# ****   Topic getter for different types
+#==================================================
     def getTopic(self, topicName, data_type = str):
         print "Requesting %s with type %s"%(topicName, data_type)
         rcvdMsg = rospy.wait_for_message(topicName, data_type, DEFAULT_TIMEOUT)
@@ -473,8 +611,8 @@ class manager3D:
         return True
 
     def retransmitTopic(self, times, source_topic, output_topic, data_type = UInt16):
-        """ 'retransmitTopic' is meant to be executed in a different thread in order
-        to repeat a number of messages received from a topic to another one. """
+        """Method meant to be executed in a different thread in order
+        to repeat a number of messages received from a topic to another one."""
         # TODO: it should use the interface to send the messages in order to be according to the structure
         # but be careful with moving too much the images or the throughput will die...
         if source_topic in rospy.get_published_topics(namespace='/') == False:
@@ -490,7 +628,13 @@ class manager3D:
             print "Failed while trying to retransmit %s topic in %s."
         return True
 
-## General methods
+
+
+###################################################
+##  *****     General Purpouse Methods     *****
+###################################################
+# ****   Callback for Dynamic Reconfigure Client
+#==================================================
     def dynClientCallback(self, dynConfiguration):
         if self.avoidSelfReconf < 1:
             print ("Remote configuration changed.".rjust(100, '-'))
@@ -504,7 +648,10 @@ class manager3D:
         ifcNode.changeSelfParameters(dynConfiguration)
         return dynConfiguration
 
-    # Service callers
+
+###################################################
+# ****   Service Callers
+#==================================================
     def callService(service, arguments, valueType = stringValue):
         try:
             rospy.wait_for_service(service, timeout = DEFAULT_TIMEOUT * 10)
@@ -519,7 +666,11 @@ class manager3D:
             print "Exception while calling service: %s"%(e)
         return resp1
     
-    # Static utility methods
+
+
+###################################################
+# ****   Static utility methods
+#==================================================
     @staticmethod
     def topicExists(topicName):
         for i in rospy.get_published_topics():
@@ -527,15 +678,31 @@ class manager3D:
                 return True
         return False
 
- ## '...' class for retransmitting from one topic to another for a certain amount of data or time
- # Objects from this class should be instantiated or executed in separated threads to avoid
- # stopping the node when retransmitting.
+
+
+
+
+###############################################################################
+##  *****     *****    testClassForRetransmission Class     *****     *****
+###############################################################################
+
 class testClassForRetransmission:
-## Static Data
+    """Class for retransmitting from one topic to another for a certain amount of data or time
+	Objects from this class should be instantiated or executed in separated threads to avoid
+	stopping the node when retransmitting."""
+
+
+###############################################
+##  *****     Static Data Members     *****
+###############################################
     dynSrvTimeout = DEFAULT_TIMEOUT
     timesLeft = 0
     publisher_topic = None
-## Constructor
+
+
+###############################################
+##  *****     Constructor Method     *****
+###############################################
     def __init__(self, times, source_topic, output_topic, data_type = UInt16):
         self.timesLeft = times
 #        if not source_topic in rospy.get_published_topics(namespace='/'):
@@ -548,6 +715,10 @@ class testClassForRetransmission:
             pass
         return
 
+
+###############################################
+##  *****     More Methods     *****
+###############################################
     def callback(data):
         self.publisher_topic.publish(data)
         self.timesLeft = self.timesLeft - 1
@@ -569,8 +740,16 @@ class testClassForRetransmission:
             print "Failed while trying to retransmit %s topic in %s."
         return True
         rospy.spin()
-        
-        
+
+
+
+
+
+###############################################################################
+##  *****     *****    SINGLE UTILITY FUNCTIONS     *****     *****
+###############################################################################
+#  *****    Get Parameters from Parameter Server    *****
+#==============================================================================
         
 def getParam(param_name):
     location = rospy.search_param(param_name)
@@ -578,6 +757,15 @@ def getParam(param_name):
         rospy.sleep(10)
         raise Exception("ERROR: Mandatory '%s' parameter not found."%(param_name))
     return rospy.get_param(location)
+
+
+
+
+
+
+###############################################################################
+##  *****     *****    MAIN FUNCTION OF THE CODE     *****     *****
+###############################################################################
 
 
 def mainFunction():
@@ -635,6 +823,14 @@ def mainFunction():
             else:
                 rospy.spin()
     return
+
+
+
+
+
+###############################################################################
+##  *****    *****    ENTRY POINT FOR STARTING THE CODE    *****    *****
+###############################################################################
 
  ##MICHI TODO: call "start" from this main with a "try" and then a symbolic "stop" maybe?
 if __name__ == '__main__':

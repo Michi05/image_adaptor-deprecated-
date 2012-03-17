@@ -34,7 +34,7 @@
         <!-- set private parameters -->
 	    <!-- TODO: group parameter servers or driver names using "ns" or "group" ?? -->
         <param name="driver01" value="camera/driver/" />
-        <param name="propertyConfigFile" value="$(arg pkg_location)/translation_relative.yaml" />
+        <param name="propertyConfigFile" value="$(arg pkg_location)/translation.yaml" />
 
 <!-- virtual means that => resolXfreq=mode
         <param name="prop_z_offset_mm" value="$(arg camera_name)/driver/z_offset_mm,int,outParam" />

@@ -1,0 +1,231 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module img_a_node</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>img_a_node</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/super/ros_workspace/image_adaptor/nodes/img_a_node.py">/home/super/ros_workspace/image_adaptor/nodes/img_a_node.py</a></font></td></tr></table>
+    <p><tt>The&nbsp;following&nbsp;code&nbsp;implements&nbsp;an&nbsp;Adaptor&nbsp;Interface&nbsp;Node&nbsp;written&nbsp;in&nbsp;Python&nbsp;for&nbsp;Robot&nbsp;Operating&nbsp;System.<br>
+This&nbsp;module&nbsp;is&nbsp;meant&nbsp;to&nbsp;provide&nbsp;communication&nbsp;between&nbsp;any&nbsp;application&nbsp;able&nbsp;to&nbsp;communicate&nbsp;with&nbsp;this&nbsp;node<br>
+and&nbsp;any&nbsp;camera&nbsp;device&nbsp;drivers&nbsp;with&nbsp;the&nbsp;appropriate&nbsp;file&nbsp;configuration&nbsp;in&nbsp;the&nbsp;"translation.yaml"&nbsp;file.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="image_adaptor.cfg.PropertiesConfig.html">image_adaptor.cfg.PropertiesConfig</a><br>
+<a href="ast.html">ast</a><br>
+<a href="geometry_msgs.html">geometry_msgs</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="re.html">re</a><br>
+<a href="roslib.html">roslib</a><br>
+</td><td width="25%" valign=top><a href="rospy.html">rospy</a><br>
+<a href="sensor_msgs.html">sensor_msgs</a><br>
+<a href="std_msgs.html">std_msgs</a><br>
+</td><td width="25%" valign=top><a href="stereo_msgs.html">stereo_msgs</a><br>
+<a href="struct.html">struct</a><br>
+<a href="sys.html">sys</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="img_a_node.html#img_interface_node">img_interface_node</a>
+</font></dt><dt><font face="helvetica, arial"><a href="img_a_node.html#manager3D">manager3D</a>
+</font></dt><dt><font face="helvetica, arial"><a href="img_a_node.html#propertyTranslator">propertyTranslator</a>
+</font></dt><dt><font face="helvetica, arial"><a href="img_a_node.html#testClassForRetransmission">testClassForRetransmission</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="img_interface_node">class <strong>img_interface_node</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;'<a href="#img_interface_node">img_interface_node</a>'&nbsp;is&nbsp;the&nbsp;class&nbsp;which&nbsp;communicates&nbsp;to&nbsp;the&nbsp;layer&nbsp;above<br>
+according&nbsp;to&nbsp;this&nbsp;structure.&nbsp;It&nbsp;provides&nbsp;services&nbsp;and&nbsp;dynamic&nbsp;reconfigure&nbsp;server<br>
+and&nbsp;also&nbsp;publishes&nbsp;topics.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="img_interface_node-__init__"><strong>__init__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="img_interface_node-changeSelfParameters"><strong>changeSelfParameters</strong></a>(self, dynConfiguration, falling<font color="#909090">=False</font>)</dt></dl>
+
+<dl><dt><a name="img_interface_node-dynServerCallback"><strong>dynServerCallback</strong></a>(self, dynConfiguration, levelCode)</dt><dd><tt>Dynamic&nbsp;Reconfigure&nbsp;handler<br>
+Must&nbsp;return&nbsp;a&nbsp;configuration&nbsp;in&nbsp;the&nbsp;same&nbsp;format&nbsp;as&nbsp;received.</tt></dd></dl>
+
+<dl><dt><a name="img_interface_node-getAnyProperty"><strong>getAnyProperty</strong></a>(self, propertyName)</dt><dd><tt>#&nbsp;Generic&nbsp;setter&nbsp;in&nbsp;order&nbsp;to&nbsp;redirect&nbsp;to&nbsp;the&nbsp;appropriate&nbsp;method</tt></dd></dl>
+
+<dl><dt><a name="img_interface_node-getBoolProperty"><strong>getBoolProperty</strong></a>(self, srvMsg)</dt></dl>
+
+<dl><dt><a name="img_interface_node-getDispImage"><strong>getDispImage</strong></a>(self, srvMsg)</dt></dl>
+
+<dl><dt><a name="img_interface_node-getFixedTypeProperty"><strong>getFixedTypeProperty</strong></a>(self, propertyName, valueType)</dt></dl>
+
+<dl><dt><a name="img_interface_node-getFloatProperty"><strong>getFloatProperty</strong></a>(self, srvMsg)</dt></dl>
+
+<dl><dt><a name="img_interface_node-getImage"><strong>getImage</strong></a>(self, srvMsg)</dt></dl>
+
+<dl><dt><a name="img_interface_node-getIntProperty"><strong>getIntProperty</strong></a>(self, srvMsg)</dt></dl>
+
+<dl><dt><a name="img_interface_node-getStringProperty"><strong>getStringProperty</strong></a>(self, srvMsg)</dt><dd><tt>#&nbsp;Generic&nbsp;getter&nbsp;in&nbsp;order&nbsp;to&nbsp;redirect&nbsp;to&nbsp;the&nbsp;appropriate&nbsp;method<br>
+#Specific&nbsp;fixed&nbsp;type&nbsp;property&nbsp;getters</tt></dd></dl>
+
+<dl><dt><a name="img_interface_node-get_property_list"><strong>get_property_list</strong></a>(self)</dt><dd><tt>#&nbsp;Method&nbsp;to&nbsp;request&nbsp;the&nbsp;complete&nbsp;list&nbsp;of&nbsp;properties</tt></dd></dl>
+
+<dl><dt><a name="img_interface_node-listenToRequests"><strong>listenToRequests</strong></a>(self)</dt><dd><tt>Main&nbsp;service&nbsp;creator&nbsp;method&nbsp;in&nbsp;order&nbsp;to&nbsp;remain&nbsp;listening.</tt></dd></dl>
+
+<dl><dt><a name="img_interface_node-publishDispImages"><strong>publishDispImages</strong></a>(self, srvMsg)</dt><dd><tt>#&nbsp;Methods&nbsp;related&nbsp;to&nbsp;requesting&nbsp;topics&nbsp;to&nbsp;publish</tt></dd></dl>
+
+<dl><dt><a name="img_interface_node-publishImages"><strong>publishImages</strong></a>(self, srvMsg)</dt></dl>
+
+<dl><dt><a name="img_interface_node-setAnyProperty"><strong>setAnyProperty</strong></a>(self, propertyName, newValue)</dt><dd><tt>Generic&nbsp;setter&nbsp;in&nbsp;order&nbsp;to&nbsp;redirect&nbsp;to&nbsp;the&nbsp;appropriate&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="img_interface_node-setBoolProperty"><strong>setBoolProperty</strong></a>(self, setIntMsg)</dt></dl>
+
+<dl><dt><a name="img_interface_node-setFixedTypeProperty"><strong>setFixedTypeProperty</strong></a>(self, propertyName, newValue, valueType)</dt></dl>
+
+<dl><dt><a name="img_interface_node-setFloatProperty"><strong>setFloatProperty</strong></a>(self, setIntMsg)</dt></dl>
+
+<dl><dt><a name="img_interface_node-setIntProperty"><strong>setIntProperty</strong></a>(self, setIntMsg)</dt></dl>
+
+<dl><dt><a name="img_interface_node-setStrProperty"><strong>setStrProperty</strong></a>(self, setStrMsg)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>listOf_services</strong> = {}</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="manager3D">class <strong>manager3D</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Communication&nbsp;module&nbsp;class&nbsp;for&nbsp;handling&nbsp;the&nbsp;low-level&nbsp;driver.&nbsp;That<br>
+is&nbsp;the&nbsp;manager&nbsp;for&nbsp;the&nbsp;layer&nbsp;below,&nbsp;so&nbsp;all&nbsp;the&nbsp;requests&nbsp;should&nbsp;use&nbsp;this&nbsp;module&nbsp;in<br>
+order&nbsp;to&nbsp;observe&nbsp;the&nbsp;structure.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="manager3D-__init__"><strong>__init__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="manager3D-callService"><strong>callService</strong></a>(service, arguments, valueType<font color="#909090">=&lt;class 'image_adaptor.srv._stringValue.stringValue'&gt;</font>)</dt></dl>
+
+<dl><dt><a name="manager3D-dynClientCallback"><strong>dynClientCallback</strong></a>(self, dynConfiguration)</dt></dl>
+
+<dl><dt><a name="manager3D-getParameter"><strong>getParameter</strong></a>(self, paramName)</dt></dl>
+
+<dl><dt><a name="manager3D-getTopic"><strong>getTopic</strong></a>(self, topicName, data_type<font color="#909090">=&lt;type 'str'&gt;</font>)</dt></dl>
+
+<dl><dt><a name="manager3D-handleClientReconfiguration"><strong>handleClientReconfiguration</strong></a>(self, dynConfiguration)</dt></dl>
+
+<dl><dt><a name="manager3D-retransmitTopic"><strong>retransmitTopic</strong></a>(self, times, source_topic, output_topic, data_type<font color="#909090">=&lt;class 'std_msgs.msg._UInt16.UInt16'&gt;</font>)</dt><dd><tt>Method&nbsp;meant&nbsp;to&nbsp;be&nbsp;executed&nbsp;in&nbsp;a&nbsp;different&nbsp;thread&nbsp;in&nbsp;order<br>
+to&nbsp;repeat&nbsp;a&nbsp;number&nbsp;of&nbsp;messages&nbsp;received&nbsp;from&nbsp;a&nbsp;topic&nbsp;to&nbsp;another&nbsp;one.</tt></dd></dl>
+
+<dl><dt><a name="manager3D-sendByTopic"><strong>sendByTopic</strong></a>(self, topic, value, data_type<font color="#909090">=&lt;class 'std_msgs.msg._UInt16.UInt16'&gt;</font>)</dt></dl>
+
+<dl><dt><a name="manager3D-setParameter"><strong>setParameter</strong></a>(self, paramName, newValue)</dt></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="manager3D-topicExists"><strong>topicExists</strong></a>(topicName)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>dynSrvTimeout</strong> = 3</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="propertyTranslator">class <strong>propertyTranslator</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;'PropertyTranslator'&nbsp;class&nbsp;is&nbsp;the&nbsp;module&nbsp;to&nbsp;change&nbsp;driver&nbsp;names&nbsp;and&nbsp;paths&nbsp;into<br>
+the&nbsp;ones&nbsp;offered&nbsp;by&nbsp;the&nbsp;interface&nbsp;and&nbsp;the&nbsp;other&nbsp;way&nbsp;around.&nbsp;It&nbsp;stores&nbsp;two&nbsp;dictionaries&nbsp;(for<br>
+both&nbsp;translations)&nbsp;and&nbsp;several&nbsp;methods&nbsp;for&nbsp;translating.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="propertyTranslator-__init__"><strong>__init__</strong></a>(self, config_filename)</dt></dl>
+
+<dl><dt><a name="propertyTranslator-canGet"><strong>canGet</strong></a>(self, propertyName)</dt></dl>
+
+<dl><dt><a name="propertyTranslator-canSet"><strong>canSet</strong></a>(self, propertyName)</dt></dl>
+
+<dl><dt><a name="propertyTranslator-getTopicPath"><strong>getTopicPath</strong></a>(self, topicName)</dt></dl>
+
+<dl><dt><a name="propertyTranslator-get_param_basename"><strong>get_param_basename</strong></a>(self, parameter)</dt></dl>
+
+<dl><dt><a name="propertyTranslator-get_property_list"><strong>get_property_list</strong></a>(self)</dt><dd><tt>Method&nbsp;to&nbsp;request&nbsp;the&nbsp;complete&nbsp;list&nbsp;of&nbsp;properties.</tt></dd></dl>
+
+<dl><dt><a name="propertyTranslator-interpret"><strong>interpret</strong></a>(self, propertyName)</dt><dd><tt>Receives&nbsp;the&nbsp;fixed&nbsp;name&nbsp;of&nbsp;the&nbsp;property&nbsp;and<br>
+translates&nbsp;it&nbsp;into&nbsp;the&nbsp;needed&nbsp;data&nbsp;to&nbsp;read&nbsp;it.</tt></dd></dl>
+
+<dl><dt><a name="propertyTranslator-readPropertyConfig"><strong>readPropertyConfig</strong></a>(self, file_name)</dt><dd><tt>This&nbsp;method&nbsp;receives&nbsp;a&nbsp;file_name&nbsp;in&nbsp;which&nbsp;to&nbsp;read&nbsp;the&nbsp;properties<br>
+and&nbsp;answers&nbsp;with&nbsp;True&nbsp;if&nbsp;and&nbsp;only&nbsp;if&nbsp;the&nbsp;reading&nbsp;was&nbsp;ok.</tt></dd></dl>
+
+<dl><dt><a name="propertyTranslator-reverseInterpret"><strong>reverseInterpret</strong></a>(self, reverseProperty)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="testClassForRetransmission">class <strong>testClassForRetransmission</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;for&nbsp;retransmitting&nbsp;from&nbsp;one&nbsp;topic&nbsp;to&nbsp;another&nbsp;for&nbsp;a&nbsp;certain&nbsp;amount&nbsp;of&nbsp;data&nbsp;or&nbsp;time<br>
+Objects&nbsp;from&nbsp;this&nbsp;class&nbsp;should&nbsp;be&nbsp;instantiated&nbsp;or&nbsp;executed&nbsp;in&nbsp;separated&nbsp;threads&nbsp;to&nbsp;avoid<br>
+stopping&nbsp;the&nbsp;node&nbsp;when&nbsp;retransmitting.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="testClassForRetransmission-__init__"><strong>__init__</strong></a>(self, times, source_topic, output_topic, data_type<font color="#909090">=&lt;class 'std_msgs.msg._UInt16.UInt16'&gt;</font>)</dt></dl>
+
+<dl><dt><a name="testClassForRetransmission-callback"><strong>callback</strong></a>(data)</dt></dl>
+
+<dl><dt><a name="testClassForRetransmission-launchRetransmission"><strong>launchRetransmission</strong></a>(self, times, source_topic, output_topic, data_type<font color="#909090">=&lt;class 'std_msgs.msg._UInt16.UInt16'&gt;</font>)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>dynSrvTimeout</strong> = 3</dl>
+
+<dl><dt><strong>publisher_topic</strong> = None</dl>
+
+<dl><dt><strong>timesLeft</strong> = 0</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-getParam"><strong>getParam</strong></a>(param_name)</dt></dl>
+ <dl><dt><a name="-mainFunction"><strong>mainFunction</strong></a>()</dt></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>DEFAULT_TIMEOUT</strong> = 3<br>
+<strong>NODE_NAME</strong> = 'img_adaptor'<br>
+<strong>PACKAGE_NAME</strong> = 'image_adaptor'<br>
+<strong>PPTY_KIND</strong> = 2<br>
+<strong>PPTY_REF</strong> = 0<br>
+<strong>PPTY_TYPE</strong> = 1<br>
+<strong>PROP_CONFIG_FILENAME</strong> = 'propertyConfigFile'<br>
+<strong>dynParamServer</strong> = None<br>
+<strong>kindOfProperty</strong> = set(['dynParam', 'outParam', 'publishedTopic', 'subscriberTopic', 'topic', 'topicName', ...])<br>
+<strong>ppty</strong> = {'kind': 2, 'reference': 0, 'type': 1}<br>
+<strong>remoteType</strong> = {&lt;type 'float'&gt;: &lt;class 'std_msgs.msg._Float64.Float64'&gt;, &lt;type 'int'&gt;: &lt;class 'std_msgs.msg._UInt16.UInt16'&gt;, &lt;type 'str'&gt;: &lt;class 'std_msgs.msg._String.String'&gt;, &lt;type 'bool'&gt;: &lt;class 'std_msgs.msg._Bool.Bool'&gt;}</td></tr></table>
+</body></html>
