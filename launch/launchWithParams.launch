@@ -18,11 +18,11 @@
   <group ns="$(arg camera_name)">
 	<!-- Always load driver first! Camera "Kinect1"
     <include file="$(find openni_launch)/launch/openni.launch"> -->
-
+<!-- 
     <include file="$(find image_adaptor)/launch/adaptor_openni.launch">
         <arg name="absolute_namespace" value="$(arg absolute_namespace)/$(arg camera_name)/" />
     </include>
-    <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" required="true"/>
+    <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" required="true"/>  -->
 
     <!-- Alternative for the node-tag line
 <node launch-prefix="gdb -ex run -<borrarme>-args /usr/bin/python "  ... >  -->
@@ -32,9 +32,8 @@
     <node name="$(arg node_name)" pkg="$(arg pkg_name)" type="$(arg main_file_basename).py" output="screen" required="true">
 
         <!-- set private parameters -->
-	    <!-- TODO: group parameter servers or driver names using "ns" or "group" ?? -->
         <param name="driver01" value="camera/driver/" />
-        <param name="propertyConfigFile" value="$(arg pkg_location)/translation.yaml" />
+        <param name="propertyConfigFile" value="$(arg pkg_location)/translation_yaml.yaml" />
 
 <!-- virtual means that => resolXfreq=mode
         <param name="prop_z_offset_mm" value="$(arg camera_name)/driver/z_offset_mm,int,outParam" />

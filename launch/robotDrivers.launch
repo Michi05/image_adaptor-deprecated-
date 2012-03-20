@@ -11,7 +11,7 @@
     <include file="$(find image_adaptor)/launch/launchWithParams.launch">
       <arg name="absolute_namespace" value="$(arg absolute_namespace)/$(arg robot_ns)/" /> <!-- absolute namespace inside of the group -->
     </include>
-    <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" required="true"/>
+    <!-- <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" required="true"/> -->
   </group>
 </launch>
 

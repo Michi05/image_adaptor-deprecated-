@@ -50,8 +50,16 @@ rgb_raw	:	rgb/image_raw,sensor_msgs/Image,topicName
 rgb_rect	:	rgb/image_rect,sensor_msgs/Image,topicName
 rgb_rect_color	:	rgb/image_rect_color,sensor_msgs/Image,topicName
 
-ALTERNATIVE_prop_data_skip	:	camera/driver/data_skip;int;0-10;dynParam
-ALTERNATIVE_another_prop	:	camera/driver/data_skip;int;uno,dos,tres;dynParam
-ALTERNATIVE_no_boundariesA	:	camera/driver/data_skip;int;;dynParam
-ALTERNATIVE_no_boundariesB	:	camera/driver/data_skip;int;algo-algo;dynParam
+    image_mode	:	camera/driver/image_mode,int,dynParam
+        rgb_resolution	:	resol,int,virtual
+        rgb_frequency	:	freq,int,virtual
+    depth_mode	:	camera/driver/depth_mode,int,dynParam
+        depth_resolution	:	resol,int,virtual
+        depth_frequency	:	freq,int,virtual
+
+    ALTERNATIVE_prop_data_skip	:	camera/driver/data_skip;int;0-10;dynParam
+    ALTERNATIVE_another_prop	:	camera/driver/data_skip;int;uno,dos,tres;dynParam
+    ALTERNATIVE_no_boundariesA	:	camera/driver/data_skip;int;;dynParam
+    ALTERNATIVE_no_boundariesB	:	camera/driver/data_skip;int;algo-algo;dynParam
+...
 
