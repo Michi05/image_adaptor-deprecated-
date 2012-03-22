@@ -57,6 +57,16 @@ from sensor_msgs.msg import *
 
 
 ###############################################################################
+##  *****     *****    This file is divided in three classes:    *****     *****
+###############################################################################
+# # # - Driver manager (communicate with layer below)
+# # # - Interface node (communicate with layer above)
+# # # - Property translator
+
+
+
+
+###############################################################################
 ##  *****     *****    Self agreement:    *****     *****
 ###############################################################################
 # # #  *** ( Not being followed anymore by the moment ) ***
@@ -72,25 +82,19 @@ from sensor_msgs.msg import *
 
 
 
-###############################################################################
-##  *****     *****    This file is divided in three parts:    *****     *****
-###############################################################################
-# # # - 3D Data manager (communicate with layer below)
-# # # - 3D Data interface node (comm with layer above)
-# # # - 3D Property translator
-
-
-
-
 
 ###############################################################################
-##  *****     *****    To avoid getting stuck in config updates:    *****     *****
+##  ****     ****    To avoid getting stuck in config updates:    ****     ****
 ###############################################################################
-#BAD AND DANGEROUS SOLUTION
 #avoidSelfReconf = 0
 #avoidRemoteReconf = 0
-# These vbles are bypasses; they are incremented as many times as expected to avoid and if below 1,
-#then there are unexpected reconfigures, ergo, they don't avoid handling
+# These vbles are incremented as many times as propagations to avoid. When below 1,
+#then there are real callbacks:
+ # # avoidSelfReconf ++;
+ # # ** UNEXPECTED REAL CALLBACK **
+ # # ** real callback call avoided **
+ # # update_config(...)
+ # # ** second callback updates everything
 #==============================================================================
 
 
@@ -282,17 +286,12 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         """Main property setter receiving the property name, the value to assign and its type
         and returning the response from the "setParameter" method from the low level driver."""
         propertyData = self.translator.interpret(propertyName)
+        #TODO: Any type checking here?
         if propertyData == None:
             print "Error: trying to set not found property."
             return None
-        else:
-            print "Obtained %s = %s."%(propertyName, propertyData[PPTY_REF])
-        #TODO: Any type checking here?
-        
-        print "PropertyKind = ", propertyData[PPTY_KIND]
-        print "Path: ", propertyTranslator.get_param_basename(propertyData[PPTY_REF])
-        print rospy.get_namespace() + propertyData[PPTY_REF]
-        #else:
+#        else:
+#            print "Obtained %s = %s."%(propertyName, propertyData[PPTY_REF])
         resp1 = True
         if propertyData[PPTY_KIND] == "dynParam":
             resp1 = self.driverMgr.setParameter(propertyTranslator.get_param_basename(propertyData[PPTY_REF]), newValue)
@@ -455,7 +454,7 @@ both translations) and several methods for translating."""
         """Receives the fixed name of the property and
         translates it into the needed data to read it."""
         resp1 = None
-        for dictionary in self.translations:
+        for dictionary in self.translations[1]:
             if propertyName in dictionary:
                 resp1 = dictionary[propertyName]
                 break
@@ -529,20 +528,28 @@ both translations) and several methods for translating."""
 #==================================================
 
     def canSet(self, propertyName):
-        """Receives the name of a property and decides weather if it can be Setted or not."""
+        """Receives the name of a property and decides whether if it can be Setted or not."""
         kindsToSet = set (["dynParam", "subscriberTopic", "topic"])
-        for dictionary in self.translations:
+        for dictionary in self.translations[1]:
             if propertyName in dictionary:
                 return (dictionary[propertyName][PPTY_KIND] in kindsToSet)
         return False
     def canGet(self, propertyName):
         """Receives the name of a property and decides weather if it can be Getted or not."""
         kindsToGet = set (["dynParam", "outParam", "publishedTopic", "topic"])
-        for dictionary in self.translations:
+        for dictionary in self.translations[1]:
             if propertyName in dictionary:
                 return (dictionary[propertyName][PPTY_KIND] in kindsToSet)
         return False
 
+    def get_param_relative(propName):
+        """Translation utility for getting the relative path to a property (without the local namespace)."""
+        for path, dictionary in zip(self.translations[0], self.translations[1]):
+            if propertyName in dictionary:
+                return (path + propertyName)
+        return False
+
+    @staticmethod
     def get_param_basename(propName):
         """Static method that receives a name or path and returns the name after the last slash.
         That is: propName = /rootDir/secondary/package/whatever/propName = /propName/ """ 
@@ -567,7 +574,7 @@ both translations) and several methods for translating."""
     def get_property_list(self):
         """Method that returns the complete list of properties."""
         propList = {}
-        for dictionary in self.translations:
+        for dictionary in self.translations[1]:
             for elem in dictionary:
                 propList[elem] = dictionary[elem]
         return propList
@@ -641,7 +648,7 @@ class manager3D:
         else:
             rospy.logrerr("Error while updating dynamic server; falling down to other configuration")
             newConfig = requestResult
-            response = ifcNode.changeSelfParameters(newConfig)
+            response = globals()["ifcNode"].changeSelfParameters(newConfig, True)
             if response == None:
                 rospy.logrerr("Error while correcting self parameters in dynamic reconfiguration.")
         return False
@@ -697,7 +704,7 @@ class manager3D:
             self.avoidSelfReconf = self.avoidSelfReconf - 1
         else:
             rospy.loginfo("Remote configuration changed.".rjust(80, '-'))
-            dynConfiguration = ifcNode.changeSelfParameters(dynConfiguration)
+            dynConfiguration = globals()["ifcNode"].changeSelfParameters(dynConfiguration, False)
         return dynConfiguration
 
 
