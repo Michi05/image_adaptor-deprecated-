@@ -215,35 +215,24 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
                         rospy.logerr("...%s used"%(dynConfiguration[elem]))
         return dynConfiguration
 
-    def changeSelfParameters(self, dynConfiguration, falling = False):
+    def changeSelfParameters(self, dynConfiguration, avoidPropagation = True):
         """This method is responsible for changing the node's own dynamic reconfigure parameters
         from its own code ***but avoiding a chain of uncontrolled callbacks!!.
         It returns True if everything went as expected."""
-        chgReconf = DynamicReconfigureClient(rospy.get_name(), DEFAULT_TIMEOUT, (lambda *_, **__: None))
-        if chgReconf == None:
-            return False
-        
         newConfig = {}
         for elem in dynConfiguration:
             paramName = self.translator.reverseInterpret(elem)
             if paramName != "":
                 newValue = dynConfiguration[elem]
                 newConfig[paramName] = newValue
-#                rospy.set_param('~' + paramName, newValue)
-#                print "Changing %s to %s"%(paramName, newValue)
             else:
                 print "Error while retrieving reverse translation"
 
-        requestResult = True
-        self.avoidRemoteReconf = self.avoidRemoteReconf + 1
-        if falling == True: ## MICHI: This is just to avoid the interlock, isn't it?
-            print "rosrun dynamic_reconfigure dynparam set %s %s %s"%(rospy.get_name(), paramName, newValue)
-            os.system("rosrun dynamic_reconfigure dynparam set %s %s %s"%(rospy.get_name(), paramName, newValue))
-##TODO: reconsider the things above
-        else:
-            requestResult = chgReconf.update_configuration(newConfig)
+        if avoidPropagation == True:
+            self.avoidRemoteReconf = self.avoidRemoteReconf + 1
+        requestResult = self.dynServer.update_configuration(newConfig)
         if requestResult != None:
-            return True
+            return requestResult
         return False
 
 
@@ -650,9 +639,11 @@ class manager3D:
         if requestResult[paramName] == newValue:
             return True
         else:
-            print "Error while updating dynamic server; falling down to other configuration"
-            newConfig = {paramName: requestResult[paramName]}
-            ifcNode.changeSelfParameters(newConfig)
+            rospy.logrerr("Error while updating dynamic server; falling down to other configuration")
+            newConfig = requestResult
+            response = ifcNode.changeSelfParameters(newConfig)
+            if response == None:
+                rospy.logrerr("Error while correcting self parameters in dynamic reconfiguration.")
         return False
 
 
@@ -702,16 +693,11 @@ class manager3D:
 # ****   Callback for Dynamic Reconfigure Client
 #==================================================
     def dynClientCallback(self, dynConfiguration):
-        if self.avoidSelfReconf < 1:
-            print ("Remote configuration changed.".rjust(100, '-'))
-            self.handleClientReconfiguration(dynConfiguration)
         if self.avoidSelfReconf > 0:
-#            print ("dynServer confirmation".rjust(100, '-'))
             self.avoidSelfReconf = self.avoidSelfReconf - 1
-        return dynConfiguration
-    
-    def handleClientReconfiguration(self, dynConfiguration):
-        ifcNode.changeSelfParameters(dynConfiguration)
+        else:
+            rospy.loginfo("Remote configuration changed.".rjust(80, '-'))
+            dynConfiguration = ifcNode.changeSelfParameters(dynConfiguration)
         return dynConfiguration
 
 
