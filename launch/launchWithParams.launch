@@ -16,13 +16,12 @@
 
   <!-- start the nodes in the camera namespace -->
   <group ns="$(arg camera_name)">
-	<!-- Always load driver first! Camera "Kinect1"
-    <include file="$(find openni_launch)/launch/openni.launch"> -->
-<!-- 
+	<!-- Always load driver first! Camera "Kinect1" -->
+
     <include file="$(find image_adaptor)/launch/adaptor_openni.launch">
         <arg name="absolute_namespace" value="$(arg absolute_namespace)/$(arg camera_name)/" />
     </include>
-    <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" required="true"/>  -->
+    <node name="kinect_aux_node" pkg="kinect_aux" type="kinect_aux_node" required="true"/>
 
     <!-- Alternative for the node-tag line
 <node launch-prefix="gdb -ex run -<borrarme>-args /usr/bin/python "  ... >  -->
