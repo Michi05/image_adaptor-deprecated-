@@ -12,6 +12,8 @@
   <param name="z_offset_mm" type="int" value="0" />
   <param name="rgb_resolution" type="int" value="2" />
   <param name="rgb_frequency" type="int" value="30" />
+  <param name="rgb/resolution" type="int" value="2" />
+  <param name="rgb/frequency" type="int" value="30" />
   <param name="depth_resolution" type="int" value="2" />
   <param name="depth_frequency" type="int" value="30" />
   <param name="cur_tilt_angle" type="double" value="0.0" />

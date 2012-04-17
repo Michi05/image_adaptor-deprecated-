@@ -24,14 +24,12 @@ import roslib; roslib.load_manifest(PACKAGE_NAME)
 import rospy
 import sys
 # February02 - Regular expressions
-import re
-# February14 - For line commands:
-#os.system("rosrun dynamic_reconfigure...)
-import os
-# March12 - For argument evaluation:
-import ast
+#import re
 # March19 - YAML library for configuration file.
 import yaml
+# April17 - Command line calls for launching nodes
+import subprocess
+import shlex
 
 
 
@@ -108,7 +106,7 @@ from sensor_msgs.msg import *
 
 globals()["DEFAULT_TIMEOUT"] = 3
 remoteType = {str: String, int: UInt16, float: Float64, bool: Bool}
-kindOfProperty = set(["dynParam", "outParam", "publishedTopic", "subscriberTopic", "topic", "topicName", "virtual"])
+kindOfProperty = set(["dynParam", "readOnlyParam", "publishedTopic", "topic", "service", "virtual"])
 ppty = {"reference":0, "type":1, "kind":2}
 PPTY_REF = ppty["reference"]
 PPTY_TYPE = ppty["type"]
@@ -187,7 +185,10 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
 ##MICHI: 13Mar2012
         self.listOf_services['publishDispImages'] = rospy.Service('publishDispImages', requestTopic, self.publishDispImages)
         self.listOf_services['publishImages'] = rospy.Service('publishImages', requestTopic, self.publishImages)
-        
+##MICHI: 16Apr2012
+        self.listOf_services['get/TopicLocation'] = rospy.Service('get/TopicLocation', stringValue, self.getStringProperty)
+        self.listOf_services['set/TopicLocation'] = rospy.Service('set/TopicLocation', setString, self.setTopicLocation)
+
         self.listOf_services['setStrProperty'] = rospy.Service('setStrProperty', setString, self.setStrProperty)
         self.listOf_services['setIntProperty'] = rospy.Service('setIntProperty', setInteger, self.setIntProperty)
         self.listOf_services['setFloatProperty'] = rospy.Service('setFloatProperty', setFloat, self.setFloatProperty)
@@ -240,7 +241,18 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         return False
 
 
-
+    def setTopicLocation(self, setStrMsg):
+        oldAddress = self.translator.interpret(setStrMsg.topicName)[PPTY_REF]
+        if oldAddress != None:
+            print "...relocating", oldAddress + "..."
+            if self.driverMgr.relocateTopic(oldAddress, setStrMsg.newValue):
+                print "...setting new..."
+                self.translator.change(setStrMsg.topicName, setStrMsg.newValue)
+            else:
+                print "...ERROR while relocating!"
+        else:
+            print "...ERROR, unknown topic!"
+        return "Success!"
 
 
 ###################################################
@@ -295,7 +307,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         resp1 = True
         if propertyData[PPTY_KIND] == "dynParam":
             resp1 = self.driverMgr.setParameter(propertyTranslator.get_param_basename(propertyData[PPTY_REF]), newValue)
-        elif propertyData[PPTY_KIND] == "subscriberTopic" or propertyData[PPTY_KIND] == "topic":
+        elif propertyData[PPTY_KIND] == "topic":
             self.driverMgr.sendByTopic(rospy.get_namespace() + propertyData[PPTY_REF], newValue, remoteType[valueType])
         else:
             resp1 = False
@@ -362,11 +374,12 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         if propertyData == None:
             return None
         #else:
-        if propertyData[PPTY_KIND] == "dynParam" or propertyData[PPTY_KIND] == "outParam":
-            resp1 = self.driverMgr.getParameter(propertyTranslator.get_param_basename(propertyData[PPTY_REF]))
-        elif propertyData[PPTY_KIND] == "publishedTopic" or propertyData[PPTY_KIND] == "topic":
+        if propertyData[PPTY_KIND] == "dynParam" or propertyData[PPTY_KIND] == "readOnlyParam": ## TODO: y esto?! y si el parámetro de sólo lectura no es dinámico?!
+            paramName = propertyTranslator.get_param_basename(propertyData[PPTY_REF])
+            resp1 = self.driverMgr.getParameter(paramName)
+        elif propertyData[PPTY_KIND] == "publishedTopic":
             resp1 = self.driverMgr.getTopic(propertyData[PPTY_REF], valueType)
-        elif propertyData[PPTY_KIND] == "topicName":
+        elif propertyData[PPTY_KIND] == "topic":
 ##MICHI: 14Feb2012
             if valueType == str:
                 resp1 = str(propertyData[PPTY_REF])
@@ -378,7 +391,6 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         else:
             print "Error: unable to get property %s of kind %s"%(propertyName, propertyData[PPTY_TYPE])
             resp1 = None
-        print "I read %s and %s..."%(propertyData[PPTY_REF], resp1)
         return resp1
 
 
@@ -450,6 +462,15 @@ both translations) and several methods for translating."""
 # ****   Interpret and Reverse interpret
 #==================================================
 
+    def change (self, propertyName, newValue):
+        for dictionary in self.translations[1]:
+            if propertyName in dictionary:
+                dictionary[propertyName][PPTY_REF] = newValue
+                break
+        else:
+            return None
+        return newValue
+        
     def interpret(self, propertyName): # TODO: maybe translate is a better name?
         """Receives the fixed name of the property and
         translates it into the needed data to read it."""
@@ -498,6 +519,8 @@ both translations) and several methods for translating."""
                     raise Exception("Unknown YAML Error in '%s'." % (file_name))
         else:
             raise Exception("Unable to open YAML configuration file '%s'." % (file_name))
+
+        ## Once the config is successfuly loaded:
         for i in yamlConfig:
             if len(i) < 1:
                 rospy.logerr("WRONG YAML FORMAT!! Nothing found in this page.")
@@ -529,17 +552,17 @@ both translations) and several methods for translating."""
 
     def canSet(self, propertyName):
         """Receives the name of a property and decides whether if it can be Setted or not."""
-        kindsToSet = set (["dynParam", "subscriberTopic", "topic"])
+        kindsToSet = set (["dynParam", "topic"])
         for dictionary in self.translations[1]:
             if propertyName in dictionary:
                 return (dictionary[propertyName][PPTY_KIND] in kindsToSet)
         return False
     def canGet(self, propertyName):
         """Receives the name of a property and decides weather if it can be Getted or not."""
-        kindsToGet = set (["dynParam", "outParam", "publishedTopic", "topic"])
+        kindsToGet = set (["dynParam", "readOnlyParam", "publishedTopic", "topic"])
         for dictionary in self.translations[1]:
             if propertyName in dictionary:
-                return (dictionary[propertyName][PPTY_KIND] in kindsToSet)
+                return (dictionary[propertyName][PPTY_KIND] in kindsToGet)
         return False
 
     def get_param_relative(propName):
@@ -579,6 +602,20 @@ both translations) and several methods for translating."""
                 propList[elem] = dictionary[elem]
         return propList
 
+    def list_of_dynamic_servers(self):
+        """Method that returns the complete list of servers in
+        which the parameters are distributed."""
+        dynServers = []
+        for dict in xrange(len(self.translations[1])):
+            for elem in self.translations[1][dict]:
+                if dictionary[elem][PPTY_KIND] == "dynParam":
+                    if self.translations[0][dict] == '~':
+                        dynServers.append('')
+                    else:
+                        dynServers.append(self.translations[0][dict])
+                    break
+        return dynServers
+
 
 
 
@@ -603,15 +640,15 @@ class manager3D:
 ###############################################
 ##  *****     Constructor Method     *****
 ###############################################
-    def __init__(self, dynParamServer): ## , serverList):
+    def __init__(self, dynServers): ## , serverList):
+        self.createdMuxes = {} # For topic relocations
         self.paramServers = {}
-        self.dynParamServer = dynParamServer ## TODO 1: Generalize this
         self.avoidSelfReconf = 0
         try:
             ## It's supposed that every dynamic server has always a "set_parameters" service
             rospy.loginfo("Creating Dynamic Reconfigure Client;")
             self.avoidSelfReconf = self.avoidSelfReconf + 1
-            for server in [dynParamServer]: ## serverList:
+            for server in dynServers: ## serverList:
                 rospy.loginfo("...waiting for server in %s."%(rospy.get_namespace() + server))
                 rospy.wait_for_service(server + "set_parameters")
                 self.paramServers[server] = DynamicReconfigureClient(server, self.dynSrvTimeout, self.dynClientCallback)
@@ -706,6 +743,24 @@ class manager3D:
             rospy.loginfo("Remote configuration changed.".rjust(80, '-'))
             dynConfiguration = globals()["ifcNode"].changeSelfParameters(dynConfiguration, False)
         return dynConfiguration
+
+    def relocateTopic(self, oldAddress, newAddress):
+        '''This very important method is meant to change the topics from one name (or address) to another in runtime.
+        Since that not possible in a literal way; "mux" tool is used to repeat them under the new name/address.
+        
+        ## TODO: Watch Out: in the first version, each change becomes a new node
+        ##while it should change the existing when possible.
+        
+        ### Here's a next step when they complete there project >>> callService("rosspawn/start", "")
+        '''
+        newIndex = len(self.createdMuxes)+1 ## The nodes always remain open... big issue, but I haven't got a solution yet
+        self.createdMuxes[oldAddress] = (newIndex, newAddress) ## Maybe the address should be checked first
+        myNamespace = '/'.join(rospy.get_namespace().split('/')[:-2]) # TODO: Watch Out! why this??
+        print "I will execute:", 'rosnode kill ' + myNamespace + '/mux' + str(newIndex)
+        subprocess.Popen(shlex.split('rosnode kill ' + myNamespace + '/mux' + str(newIndex)), close_fds=True)
+        print "Relocating from", oldAddress, "to", newAddress
+        subprocess.Popen(shlex.split('roslaunch image_adaptor runMultiplexers.launch node_id:="mux' + str(newIndex) + '" args:="' + oldAddress + ' ' + newAddress + '"'), close_fds=True)
+        return True
 
 
 ###################################################
@@ -839,7 +894,12 @@ def mainFunction(basename):
         try:
 ## Initializing the 3 layers trying to avoid dependency problems
             mainTranslator = propertyTranslator(getParam(PROP_CONFIG_FILENAME))
-            mainDriverManager = manager3D(dynParamServer = dynParamServerPath)
+            
+            
+            
+            #list_of_dynamic_servers(self)
+            
+            mainDriverManager = manager3D(dynServers = [dynParamServerPath]) # TODO: mainTranslator.getDRServers();
             globals()["ifcNode"] = img_interface_node(translator = mainTranslator, driverMgr = mainDriverManager)
             ## TODO 2: Integrate self dynamicReconf client in the driver or do whatever is better with that.
             ## TODO 3: change the img_interface class using singleton
@@ -881,7 +941,7 @@ def mainFunction(basename):
  ##MICHI TODO: call "start" from this main with a "try" and then a symbolic "stop" maybe?
 if __name__ == '__main__':
     try:
-        basename = sys.argv[0].split('/')[-1] 
+        basename = sys.argv[0].split('/')[-1]
         if basename == "":
             sys.argv[0].split('/')[-2]
         if basename[-3:] == ".py":

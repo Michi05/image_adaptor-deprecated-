@@ -155,17 +155,21 @@ namespace image_adaptor
       int rgb_resolution;
 //#line 46 "../cfg/properties.cfg"
       int rgb_frequency;
+//#line 47 "../cfg/properties.cfg"
+      int rgb/resolution;
 //#line 48 "../cfg/properties.cfg"
+      int rgb/frequency;
+//#line 50 "../cfg/properties.cfg"
       int depth_resolution;
-//#line 49 "../cfg/properties.cfg"
+//#line 51 "../cfg/properties.cfg"
       int depth_frequency;
-//#line 55 "../cfg/properties.cfg"
-      double cur_tilt_angle;
-//#line 56 "../cfg/properties.cfg"
-      double tilt_angle;
 //#line 57 "../cfg/properties.cfg"
+      double cur_tilt_angle;
+//#line 58 "../cfg/properties.cfg"
+      double tilt_angle;
+//#line 59 "../cfg/properties.cfg"
       int led_option;
-//#line 62 "../cfg/properties.cfg"
+//#line 64 "../cfg/properties.cfg"
       std::string rect_rgb_image;
 //#line 138 "/opt/ros/electric/stacks/driver_common/dynamic_reconfigure/templates/ConfigType.h"
 
@@ -355,53 +359,69 @@ namespace image_adaptor
       __default__.rgb_frequency = 30;
 //#line 46 "../cfg/properties.cfg"
       __param_descriptions__.push_back(PropertiesConfig::AbstractParamDescriptionConstPtr(new PropertiesConfig::ParamDescription<int>("rgb_frequency", "int", 1, "Specific frequency for RGB camera", "", &PropertiesConfig::rgb_frequency)));
+//#line 47 "../cfg/properties.cfg"
+      __min__.rgb/resolution = 1;
+//#line 47 "../cfg/properties.cfg"
+      __max__.rgb/resolution = 4;
+//#line 47 "../cfg/properties.cfg"
+      __default__.rgb/resolution = 2;
+//#line 47 "../cfg/properties.cfg"
+      __param_descriptions__.push_back(PropertiesConfig::AbstractParamDescriptionConstPtr(new PropertiesConfig::ParamDescription<int>("rgb/resolution", "int", 1, "Specific resolution for RGB camera", "", &PropertiesConfig::rgb/resolution)));
 //#line 48 "../cfg/properties.cfg"
+      __min__.rgb/frequency = 15;
+//#line 48 "../cfg/properties.cfg"
+      __max__.rgb/frequency = 60;
+//#line 48 "../cfg/properties.cfg"
+      __default__.rgb/frequency = 30;
+//#line 48 "../cfg/properties.cfg"
+      __param_descriptions__.push_back(PropertiesConfig::AbstractParamDescriptionConstPtr(new PropertiesConfig::ParamDescription<int>("rgb/frequency", "int", 1, "Specific frequency for RGB camera", "", &PropertiesConfig::rgb/frequency)));
+//#line 50 "../cfg/properties.cfg"
       __min__.depth_resolution = 1;
-//#line 48 "../cfg/properties.cfg"
+//#line 50 "../cfg/properties.cfg"
       __max__.depth_resolution = 4;
-//#line 48 "../cfg/properties.cfg"
+//#line 50 "../cfg/properties.cfg"
       __default__.depth_resolution = 2;
-//#line 48 "../cfg/properties.cfg"
+//#line 50 "../cfg/properties.cfg"
       __param_descriptions__.push_back(PropertiesConfig::AbstractParamDescriptionConstPtr(new PropertiesConfig::ParamDescription<int>("depth_resolution", "int", 1, "Specific resolution for Depth camera", "", &PropertiesConfig::depth_resolution)));
-//#line 49 "../cfg/properties.cfg"
+//#line 51 "../cfg/properties.cfg"
       __min__.depth_frequency = 15;
-//#line 49 "../cfg/properties.cfg"
+//#line 51 "../cfg/properties.cfg"
       __max__.depth_frequency = 60;
-//#line 49 "../cfg/properties.cfg"
+//#line 51 "../cfg/properties.cfg"
       __default__.depth_frequency = 30;
-//#line 49 "../cfg/properties.cfg"
+//#line 51 "../cfg/properties.cfg"
       __param_descriptions__.push_back(PropertiesConfig::AbstractParamDescriptionConstPtr(new PropertiesConfig::ParamDescription<int>("depth_frequency", "int", 1, "Specific frequency for Depth camera", "", &PropertiesConfig::depth_frequency)));
-//#line 55 "../cfg/properties.cfg"
+//#line 57 "../cfg/properties.cfg"
       __min__.cur_tilt_angle = -65.0;
-//#line 55 "../cfg/properties.cfg"
+//#line 57 "../cfg/properties.cfg"
       __max__.cur_tilt_angle = 65.0;
-//#line 55 "../cfg/properties.cfg"
+//#line 57 "../cfg/properties.cfg"
       __default__.cur_tilt_angle = 0.0;
-//#line 55 "../cfg/properties.cfg"
+//#line 57 "../cfg/properties.cfg"
       __param_descriptions__.push_back(PropertiesConfig::AbstractParamDescriptionConstPtr(new PropertiesConfig::ParamDescription<double>("cur_tilt_angle", "double", 2, "Current real tilt of the camera", "", &PropertiesConfig::cur_tilt_angle)));
-//#line 56 "../cfg/properties.cfg"
+//#line 58 "../cfg/properties.cfg"
       __min__.tilt_angle = -31.0;
-//#line 56 "../cfg/properties.cfg"
+//#line 58 "../cfg/properties.cfg"
       __max__.tilt_angle = 31.0;
-//#line 56 "../cfg/properties.cfg"
+//#line 58 "../cfg/properties.cfg"
       __default__.tilt_angle = 0.0;
-//#line 56 "../cfg/properties.cfg"
+//#line 58 "../cfg/properties.cfg"
       __param_descriptions__.push_back(PropertiesConfig::AbstractParamDescriptionConstPtr(new PropertiesConfig::ParamDescription<double>("tilt_angle", "double", 2, "Base-camera angle", "", &PropertiesConfig::tilt_angle)));
-//#line 57 "../cfg/properties.cfg"
+//#line 59 "../cfg/properties.cfg"
       __min__.led_option = 0;
-//#line 57 "../cfg/properties.cfg"
+//#line 59 "../cfg/properties.cfg"
       __max__.led_option = 8;
-//#line 57 "../cfg/properties.cfg"
+//#line 59 "../cfg/properties.cfg"
       __default__.led_option = 4;
-//#line 57 "../cfg/properties.cfg"
+//#line 59 "../cfg/properties.cfg"
       __param_descriptions__.push_back(PropertiesConfig::AbstractParamDescriptionConstPtr(new PropertiesConfig::ParamDescription<int>("led_option", "int", 2, "Led color and blinking mode state ", "", &PropertiesConfig::led_option)));
-//#line 62 "../cfg/properties.cfg"
+//#line 64 "../cfg/properties.cfg"
       __min__.rect_rgb_image = "";
-//#line 62 "../cfg/properties.cfg"
+//#line 64 "../cfg/properties.cfg"
       __max__.rect_rgb_image = "";
-//#line 62 "../cfg/properties.cfg"
+//#line 64 "../cfg/properties.cfg"
       __default__.rect_rgb_image = "Hello World";
-//#line 62 "../cfg/properties.cfg"
+//#line 64 "../cfg/properties.cfg"
       __param_descriptions__.push_back(PropertiesConfig::AbstractParamDescriptionConstPtr(new PropertiesConfig::ParamDescription<std::string>("rect_rgb_image", "str", 4, "Rgb rectified image", "", &PropertiesConfig::rect_rgb_image)));
 //#line 239 "/opt/ros/electric/stacks/driver_common/dynamic_reconfigure/templates/ConfigType.h"
     

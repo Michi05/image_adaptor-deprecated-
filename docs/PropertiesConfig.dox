@@ -13,6 +13,8 @@ Reads and maintains the following parameters on the ROS server
 - \b "~z_offset_mm" : \b [int] Z coordinate offset in mm min: -50, default: 0, max: 50
 - \b "~rgb_resolution" : \b [int] Specific resolution for RGB camera min: 1, default: 2, max: 4
 - \b "~rgb_frequency" : \b [int] Specific frequency for RGB camera min: 15, default: 30, max: 60
+- \b "~rgb/resolution" : \b [int] Specific resolution for RGB camera min: 1, default: 2, max: 4
+- \b "~rgb/frequency" : \b [int] Specific frequency for RGB camera min: 15, default: 30, max: 60
 - \b "~depth_resolution" : \b [int] Specific resolution for Depth camera min: 1, default: 2, max: 4
 - \b "~depth_frequency" : \b [int] Specific frequency for Depth camera min: 15, default: 30, max: 60
 - \b "~cur_tilt_angle" : \b [double] Current real tilt of the camera min: -65.0, default: 0.0, max: 65.0
