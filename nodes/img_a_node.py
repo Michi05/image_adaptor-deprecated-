@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""The following code implements an Adaptor Interface Node written in Python for Robot Operating System.
+""" The following code implements an Adaptor Interface Node written in Python for Robot Operating System.
 This module is meant to provide communication between any application able to communicate with this node
 and any camera device drivers with the appropriate file configuration in the "translation.yaml" file.
 """
@@ -35,8 +35,6 @@ globals()["serviceTimeOut"] = 3
 import roslib; roslib.load_manifest(PACKAGE_NAME)
 import rospy
 import sys
-# February02 - Regular expressions
-#import re
 # March19 - YAML library for configuration file.
 import yaml
 # April17 - Command line calls for launching nodes
@@ -228,10 +226,10 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
                         rospy.logerr('|__> ...error... while setting property "%s"'%elem)
                         rospy.logerr("Changing %s failed with %s..."%(elem,dynConfiguration[elem]))
                         dynConfiguration[elem] = self.getAnyProperty(elem)
-                        rospy.logerr("...%s used"%(dynConfiguration[elem]))
+                        rospy.logdebug("...%s used"%(dynConfiguration[elem]))
         return dynConfiguration
 
-    def changeSelfParameters(self, dynConfiguration, avoidPropagation = True):
+    def updateSelfParameters(self, dynConfiguration, avoidPropagation = True):
         """This method is responsible for changing the node's own dynamic reconfigure parameters
         from its own code ***but avoiding a chain of uncontrolled callbacks!!.
         It returns True if everything went as expected."""
@@ -253,11 +251,11 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
 
 
     def setTopicLocation(self, setStrMsg):
-        print "Received call to set/TopicLocation", setStrMsg.topicName, setStrMsg.newValue
+        rospy.loginfo (str("Received call to set/TopicLocation " + setStrMsg.topicName + " " + setStrMsg.newValue))
         translation = self.translator.interpret(setStrMsg.topicName)
         if translation != None:
             oldAddress = translation[PPTY_REF]
-            print "...relocating ", oldAddress + "..."
+            rospy.loginfo (str("...relocating " + oldAddress + "..."))
             if self.driverMgr.relocateTopic(oldAddress, setStrMsg.newValue):
                 print "...setting new..."
                 self.translator.updateValue(setStrMsg.topicName, setStrMsg.newValue)
@@ -332,7 +330,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         resp1 = True
         if propertyData[PPTY_KIND] == "dynParam":
             paramName = propertyTranslator.getBasename(propertyData[PPTY_REF])
-            resp1 = self.driverMgr.setParameter(paramName, newValue, self.translator.getDynServerPath(paramName))
+            resp1 = self.driverMgr.setParameter(paramName, newValue, self.translator.getDynServerPath(paramName), self)
         elif propertyData[PPTY_KIND] == "topic":
             self.driverMgr.sendByTopic(rospy.get_namespace() + propertyData[PPTY_REF], newValue, remoteType[valueType])
         else:
@@ -358,7 +356,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         elif (propertyData[PPTY_TYPE].lower()).find("bool") >= 0:
             valueType = bool
         else:
-            print "Error: non registered value type"
+            rospy.logerr("Error: non registered value type")
             return None
         return self.getFixedTypeProperty(propertyName, valueType)
 
@@ -383,15 +381,9 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         respImages = []
         while len(respImages) < srvMsg.nImages:
             respImages.append(self.getFixedTypeProperty(srvMsg.topicName, None))
-##****************************** Temporary for Testing: ******************************
-        propertyData = self.translator.interpret(srvMsg.topicName)
-        for image in respImages:
-            self.driverMgr.sendByTopic("testImages", image, Image)
-            rospy.Rate(10).sleep()
-##****************************** ********************** ******************************
         return respImages
-##TODO: I could add timestamp (time[] timestamp) if needed
-##Watch out; setStrMsg.topicName is from setStrMsg.srv and the ppty kind is called the same
+##AMPLIATION: I could add normalImage.timestamp (time[] timestamp) if needed (including the changes in the "normalImage.srv"
+## in that case I would need a normalImage variable and set both fields: images and timestamp
 
     def getFixedTypeProperty(self, propertyName, valueType):
         """Main property getter receiving the property name and the value type
@@ -400,16 +392,20 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         if propertyData == None:
             return None
         #else:
-        if propertyData[PPTY_KIND] == "dynParam" or propertyData[PPTY_KIND] == "readOnlyParam": ## TODO: y esto?! y si el parametro de solo lectura no es dinamico?!
+        if propertyData[PPTY_KIND] == "dynParam":
             paramName = propertyTranslator.getBasename(propertyData[PPTY_REF])
-            resp1 = self.driverMgr.getParameter(paramName, self.translator.getDynServerPath(paramName))
+            resp1 = self.driverMgr.getParameter(paramName, self.translator.getDynServerPath(propertyName))
         elif propertyData[PPTY_KIND] == "publishedTopic":
             resp1 = self.driverMgr.getTopic(propertyData[PPTY_REF], valueType)
+        elif propertyData[PPTY_KIND] == "readOnlyParam":
+            paramName = propertyTranslator.getBasename(propertyData[PPTY_REF])
+            location = rospy.search_param(param_name)
+            resp1 = rospy.get_param(location)
         elif propertyData[PPTY_KIND] == "topic":
 ##MICHI: 14Feb2012
             if valueType == str:
                 resp1 = str(propertyData[PPTY_REF])
-            else:
+            else: ## Special case for reading disparity images
                 valueType2 = DisparityImage
                 if propertyData[PPTY_TYPE].find("Disparity") < 0:
                     valueType2 = Image
@@ -503,7 +499,7 @@ both translations) and several methods for translating."""
                 resp1 = dictionary[propertyName]
                 break
         if resp1 == None:
-            print "Property '%s' not found."%propertyName
+            print "Property '%s' not found. Returning the whole string."%propertyName
         return resp1
 
     def reverseInterpret(self, reverseProperty):
@@ -512,10 +508,10 @@ both translations) and several methods for translating."""
             result = self.ReversePropDict[reverseProperty]
         else:
             for path in self.translations[0]:
-                if str(path + reverseProperty) in self.ReversePropDict: ## TODO: this ain't very robust or reliable...
-                    result = self.ReversePropDict[str(path + reverseProperty)]
+                if str(path + "/" + reverseProperty) in self.ReversePropDict:
+                    result = self.ReversePropDict[str(path + "/" + reverseProperty)]
         if result == "":
-            print "not %s nor %s found in the property list."%(reverseProperty, str(path + reverseProperty), self.ReversePropDict)
+            print "not %s nor %s found in the property list."%(reverseProperty, str(path + "/" + reverseProperty), self.ReversePropDict)
         return result
 
     
@@ -705,7 +701,7 @@ class manager3D:
                 rospy.loginfo("...waiting for server in %s."%(rospy.get_namespace() + server))
                 rospy.wait_for_service(server + "/set_parameters")
                 self.paramServers[server] = DynamicReconfigureClient(server, self.dynSrvTimeout, self.dynClientCallback)
-            rospy.loginfo("Driver manager initialized.")
+            rospy.loginfo("Driver manager initialised.")
         except:
             rospy.logerr("Error while trying to connect to remote parameter server.")
             raise
@@ -719,16 +715,16 @@ class manager3D:
 # ****   Parameter getters and setters for any type
 #==================================================
     def getParameter(self, paramName, dynServerPath):
-        ## TODO: here and below the error check is missing; what if path is wrong?
         ## TODO: what if the parameter is virtual and the server is self?? it should work anyway!
-        remoteServer = self.paramServers[dynServerPath]
-        currentConfig = remoteServer.get_configuration(self.dynSrvTimeout)
-        if paramName in currentConfig:
-            print "Read parameter %s=%s from %s"%(paramName, currentConfig[paramName], dynServerPath)
-            return currentConfig[paramName]
+        if dynServerPath in self.paramServers:
+            remoteServer = self.paramServers[dynServerPath]
+            currentConfig = remoteServer.get_configuration(self.dynSrvTimeout)
+            if paramName in currentConfig:
+                rospy.logdebug(str("Read parameter %s=%s from %s"%(paramName, currentConfig[paramName], dynServerPath)))
+                return currentConfig[paramName]
         return None
 
-    def setParameter(self, paramName, newValue, dynServerPath):
+    def setParameter(self, paramName, newValue, dynServerPath, ifcNodeInstance):
         remoteServer = self.paramServers[dynServerPath]
         newConfig = {paramName:newValue}
         self.avoidSelfReconf = self.avoidSelfReconf + 1
@@ -736,7 +732,7 @@ class manager3D:
         if requestResult[paramName] != newValue:
             rospy.logrerr("Error while updating dynamic server; falling down to actual configuration.")
             newConfig = requestResult
-            response = globals()["ifcNode"].changeSelfParameters(newConfig, True)
+            response = ifcNodeInstance.updateSelfParameters(newConfig, True)
             if response == None:
                 rospy.logrerr("Error while correcting self parameters in dynamic reconfiguration.")
         return requestResult[paramName]
@@ -765,13 +761,10 @@ class manager3D:
     def retransmitTopic(self, times, source_topic, output_topic, data_type = UInt16):
         """Method meant to be executed in a different thread in order
         to repeat a number of messages received from a topic to another one."""
-        # TODO: it should use the interface to send the messages in order to be according to the structure
-        # but be careful with moving too much the images or the throughput will die...
         if source_topic in rospy.get_published_topics(namespace='/') == False:
             print "Unable to find %s topic in %s in order to retransmit it"%(source_topic, rospy.get_published_topics(namespace='/'))
             return False
         print "Trying to retransmit %s in %s."%(source_topic, output_topic)
-        rcvd_msg = rospy.wait_for_message(source_topic, data_type, serviceTimeOut)
         publisher_topic = rospy.Publisher(output_topic, data_type)
         try:
             for i in xrange(0, times):
@@ -792,26 +785,30 @@ class manager3D:
             self.avoidSelfReconf = self.avoidSelfReconf - 1
         else:
             rospy.loginfo("Remote configuration changed.".rjust(80, '-'))
-            dynConfiguration = globals()["ifcNode"].changeSelfParameters(dynConfiguration, False)
+            dynConfiguration = globals()["ifcNode"].updateSelfParameters(dynConfiguration, False)
         return dynConfiguration
 
     def relocateTopic(self, oldAddress, newAddress):
         '''This very important method is meant to change the topics from one name (or address) to another in runtime.
         Since that not possible in a literal way; "mux" tool is used to repeat them under the new name/address.
         
-        ## TODO: Watch Out: in the first version, each change becomes a new node
-        ##while it should change the existing when possible.
-        
         ### Here's a next step when they complete their project >>> callService("rosspawn/start", "")
         '''
-#        if oldAddress in self.createdMuxes:
-#            newIndex = self.createdMuxes[oldAddress][0]
-#        else:
-        newIndex = len(self.createdMuxes)+1 ## The nodes always remain open... big issue, but I haven't got a solution yet
-        self.createdMuxes[oldAddress] = (newIndex, newAddress) ## Maybe the address should be checked first
         myNamespace = '/'.join(rospy.get_namespace().split('/')[:-2])
-        print "I will execute:", 'rosnode kill ' + myNamespace + '/mux' + str(newIndex)
-        subprocess.Popen(shlex.split('rosnode kill ' + myNamespace + '/mux' + str(newIndex)), close_fds=True)
+        newIndex = len(self.createdMuxes)+1
+        
+        if not oldAddress in self.createdMuxes:
+            ## In case that the oldAddress is a new address, the new "addressSub0" is the original one
+            for addressSub0 in [j for j in self.createdMuxes if self.createdMuxes[j][1]==oldAddress]:
+                oldAddress=addressSub0
+                
+        if oldAddress in self.createdMuxes:
+            ## In case the oldAddress is already relocated, the first node is killed
+            newIndex = self.createdMuxes[oldAddress][0]
+            print "I will execute:", 'rosnode kill ' + myNamespace + '/mux' + str(newIndex)
+            subprocess.Popen(shlex.split('rosnode kill ' + myNamespace + '/mux' + str(newIndex)), close_fds=True)
+        ## Postcondition: the index is up to date and the previous mux node is supposed to be already killed
+        self.createdMuxes[oldAddress] = (newIndex, newAddress) ## Maybe the address should be checked first
         print "Relocating from", oldAddress, "to", newAddress
         print "I will execute:", 'roslaunch image_adaptor runMultiplexers.launch namespace:="' + myNamespace + '" node_id:="mux' + str(newIndex) + '" args:="' + newAddress + ' ' + oldAddress + '"'
         subprocess.Popen(shlex.split('roslaunch image_adaptor runMultiplexers.launch namespace:="' + myNamespace + '" node_id:="mux' + str(newIndex) + '" args:="' + newAddress + ' ' + oldAddress + '"'), close_fds=True)
@@ -849,67 +846,6 @@ class manager3D:
         return False
 
 
-
-
-
-###############################################################################
-##  *****     *****    testClassForRetransmission Class     *****     *****
-###############################################################################
-
-class testClassForRetransmission:
-    """Class for retransmitting from one topic to another for a certain amount of data or time
-	Objects from this class should be instantiated or executed in separated threads to avoid
-	stopping the node when retransmitting."""
-
-
-###############################################
-##  *****     Static Data Members     *****
-###############################################
-    dynSrvTimeout = serviceTimeOut
-    timesLeft = 0
-    publisher_topic = None
-
-
-###############################################
-##  *****     Constructor Method     *****
-###############################################
-    def __init__(self, times, source_topic, output_topic, data_type = UInt16):
-        self.timesLeft = times
-#        if not source_topic in rospy.get_published_topics(namespace='/'):
-#            print "Unable to find %s topic in order to retransmit it"%(source_topic)
-#            return False
-        self.publisher_topic = rospy.Publisher(output_topic, data_type)
-        rospy.Subscriber(source_topic, data_type, callback)
-##TODO: Watch out; this is dangerous and it will probably go crazy when executed as the callback won't finish before being called again.
-        while timesLeft > 0:
-            pass
-        return
-
-
-###############################################
-##  *****     More Methods     *****
-###############################################
-    def callback(data):
-        self.publisher_topic.publish(data)
-        self.timesLeft = self.timesLeft - 1
-
-        # 'launchRetransmission' is an ALTERNATIVE to retransmitTopic in order
-        # to repeat a number of messages received from a topic in another one.
-    def launchRetransmission(self, times, source_topic, output_topic, data_type = UInt16):
-        try:
-            rospy.Subscriber("chatter", String, callback)
-        except Exception as e:
-            print "Unable to begin retransmission of %s topic."%(source_topic)
-        print "Trying to retransmit %s in %s."%(source_topic, output_topic)
-        rcvd_msg = rospy.wait_for_message(source_topic, data_type, serviceTimeOut)
-        publisher_topic = rospy.Publisher(output_topic, data_type)
-        try:
-            for i in xrange(0, times):
-                publisher_topic.publish(rospy.wait_for_message(source_topic, data_type, serviceTimeOut))
-        except exception as e:
-            print "Failed while trying to retransmit %s topic in %s."
-        return True
-        rospy.spin()
 
 
 
@@ -955,21 +891,20 @@ def mainFunction(basename):
 
     while not rospy.is_shutdown():
         try:
-## Initializing the 3 layers trying to avoid dependency problems
+## Initialising the 3 layers trying to avoid dependency problems
             mainTranslator = propertyTranslator(privateParam(KEY_CONFIG_FILENAME, DEFAULT_CONFIG_FILENAME))
 
             mainDriverManager = manager3D(dynServers = mainTranslator.dynamicServers())
             globals()["ifcNode"] = img_interface_node(translator = mainTranslator, driverMgr = mainDriverManager)
-            ## TODO 2: Integrate self dynamicReconf client in the driver or do whatever is better with that.
         except KeyboardInterrupt:
             sys.exit(0)
         except:
 #            print "Unexpected error:", sys.exc_info()[1]
 #            raise
-            rospy.logerr("Error while trying to Initialize node. Waiting 10s")
+            rospy.logerr("Error while trying to Initialise node. Waiting 10s")
             try:
         ## If there was any error I delete the objects and begin from scratch
-        # I could just use a try/except for each initialization but I don't see real improvement on that
+        # I could just use a try/except for each initialisation but I don't see real improvement on that
                 del mainTranslator
                 del mainDriverManager
                 del globals()["ifcNode"]
@@ -977,9 +912,8 @@ def mainFunction(basename):
                 pass
             rospy.sleep(10)
             rospy.loginfo("Reinitializing Node")
-#           rospy.signal_shutdown("byebye")
         else:
-            ## Everything is initialized and ready. Wait for requests:
+            ## Everything is initialised and ready. Wait for requests:
             try:
                 rospy.loginfo("...Image Adaptor initialized...")
             except KeyboardInterrupt:
