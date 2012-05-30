@@ -31,8 +31,7 @@
     <node name="$(arg node_name)" pkg="$(arg pkg_name)" type="$(arg main_file_basename).py" output="screen" required="true">
 
         <!-- set private parameters -->
-        <param name="driver01" value="camera/driver/" />
-        <param name="propertyConfigFile" value="$(arg pkg_location)/translation_yaml.yaml" />
+        <param name="property_config_file" value="$(arg pkg_location)/translation_yaml.yaml" />
 
 <!-- virtual means that => resolXfreq=mode
         <param name="prop_z_offset_mm" value="$(arg camera_name)/driver/z_offset_mm,int,outParam" />

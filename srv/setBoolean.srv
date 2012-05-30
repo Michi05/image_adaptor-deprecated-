@@ -1,4 +1,4 @@
 string topicName
 bool newValue
 ---
-string setAnswer
+bool setAnswer

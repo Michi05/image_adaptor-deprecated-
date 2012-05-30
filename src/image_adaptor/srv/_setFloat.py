@@ -128,15 +128,15 @@ import struct
 
 
 class setFloatResponse(roslib.message.Message):
-  _md5sum = "29ec6205a21c6c9d10f6202c509b169a"
+  _md5sum = "ba18d35a4d3cea370e755997f303d718"
   _type = "image_adaptor/setFloatResponse"
   _has_header = False #flag to mark the presence of a Header object
-  _full_text = """string setAnswer
+  _full_text = """float64 setAnswer
 
 
 """
   __slots__ = ['setAnswer']
-  _slot_types = ['string']
+  _slot_types = ['float64']
 
   def __init__(self, *args, **kwds):
     """
@@ -156,9 +156,9 @@ class setFloatResponse(roslib.message.Message):
       super(setFloatResponse, self).__init__(*args, **kwds)
       #message fields cannot be None, assign default values for those that are
       if self.setAnswer is None:
-        self.setAnswer = ''
+        self.setAnswer = 0.
     else:
-      self.setAnswer = ''
+      self.setAnswer = 0.
 
   def _get_types(self):
     """
@@ -173,9 +173,7 @@ class setFloatResponse(roslib.message.Message):
     @type  buff: StringIO
     """
     try:
-      _x = self.setAnswer
-      length = len(_x)
-      buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_d.pack(self.setAnswer))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -188,11 +186,8 @@ class setFloatResponse(roslib.message.Message):
     try:
       end = 0
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.setAnswer = str[start:end]
+      end += 8
+      (self.setAnswer,) = _struct_d.unpack(str[start:end])
       return self
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
@@ -207,9 +202,7 @@ class setFloatResponse(roslib.message.Message):
     @type  numpy module
     """
     try:
-      _x = self.setAnswer
-      length = len(_x)
-      buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_d.pack(self.setAnswer))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -224,18 +217,16 @@ class setFloatResponse(roslib.message.Message):
     try:
       end = 0
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.setAnswer = str[start:end]
+      end += 8
+      (self.setAnswer,) = _struct_d.unpack(str[start:end])
       return self
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = roslib.message.struct_I
+_struct_d = struct.Struct("<d")
 class setFloat(roslib.message.ServiceDefinition):
   _type          = 'image_adaptor/setFloat'
-  _md5sum = 'f27ab96a470260944318f569cc318883'
+  _md5sum = '534d71573526d91e225c2160dfe4b29d'
   _request_class  = setFloatRequest
   _response_class = setFloatResponse

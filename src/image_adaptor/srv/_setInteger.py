@@ -128,15 +128,15 @@ import struct
 
 
 class setIntegerResponse(roslib.message.Message):
-  _md5sum = "29ec6205a21c6c9d10f6202c509b169a"
+  _md5sum = "c45d6279501dc68282280a89f6f23997"
   _type = "image_adaptor/setIntegerResponse"
   _has_header = False #flag to mark the presence of a Header object
-  _full_text = """string setAnswer
+  _full_text = """int64 setAnswer
 
 
 """
   __slots__ = ['setAnswer']
-  _slot_types = ['string']
+  _slot_types = ['int64']
 
   def __init__(self, *args, **kwds):
     """
@@ -156,9 +156,9 @@ class setIntegerResponse(roslib.message.Message):
       super(setIntegerResponse, self).__init__(*args, **kwds)
       #message fields cannot be None, assign default values for those that are
       if self.setAnswer is None:
-        self.setAnswer = ''
+        self.setAnswer = 0
     else:
-      self.setAnswer = ''
+      self.setAnswer = 0
 
   def _get_types(self):
     """
@@ -173,9 +173,7 @@ class setIntegerResponse(roslib.message.Message):
     @type  buff: StringIO
     """
     try:
-      _x = self.setAnswer
-      length = len(_x)
-      buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_q.pack(self.setAnswer))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -188,11 +186,8 @@ class setIntegerResponse(roslib.message.Message):
     try:
       end = 0
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.setAnswer = str[start:end]
+      end += 8
+      (self.setAnswer,) = _struct_q.unpack(str[start:end])
       return self
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
@@ -207,9 +202,7 @@ class setIntegerResponse(roslib.message.Message):
     @type  numpy module
     """
     try:
-      _x = self.setAnswer
-      length = len(_x)
-      buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_q.pack(self.setAnswer))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -224,18 +217,16 @@ class setIntegerResponse(roslib.message.Message):
     try:
       end = 0
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.setAnswer = str[start:end]
+      end += 8
+      (self.setAnswer,) = _struct_q.unpack(str[start:end])
       return self
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = roslib.message.struct_I
+_struct_q = struct.Struct("<q")
 class setInteger(roslib.message.ServiceDefinition):
   _type          = 'image_adaptor/setInteger'
-  _md5sum = '5e7c73c54dceb5dacb1b73908f3afdcb'
+  _md5sum = 'f1188add3dec534dc11668e3b8036077'
   _request_class  = setIntegerRequest
   _response_class = setIntegerResponse

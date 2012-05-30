@@ -31,7 +31,11 @@ rosbuild_gensrv()
 #target_link_libraries(example ${PROJECT_NAME})
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(imgAdaptorListener nodes/img_a_node.py)
+#rosbuild_add_executable(image_adaptor ${PROJECT_SOURCE_DIR}/nodes/img_a_node.py)
 
-
+### For testing
+#rosbuild_add_executable(image_adaptor EXCLUDE_FROM_ALL test/img_a_test-code.py)
+#rosbuild_add_gtest_build_flags(testing01)
+#rosbuild_add_rostest(${PROJECT_SOURCE_DIR}/launch/testing01.test)
+rosbuild_add_rostest(${PROJECT_SOURCE_DIR}/test/img_a_test-code.py)
 

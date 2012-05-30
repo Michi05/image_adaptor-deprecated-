@@ -1,4 +1,4 @@
 string topicName
 float64 newValue
 ---
-string setAnswer
+float64 setAnswer

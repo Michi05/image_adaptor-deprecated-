@@ -59,7 +59,7 @@ public:
   ROS_DEPRECATED const std::string __getMD5Sum() const { return __s_getMD5Sum_(); }
 
 private:
-  static const char* __s_getServerMD5Sum_() { return "f27ab96a470260944318f569cc318883"; }
+  static const char* __s_getServerMD5Sum_() { return "534d71573526d91e225c2160dfe4b29d"; }
 public:
   ROS_DEPRECATED static const std::string __s_getServerMD5Sum() { return __s_getServerMD5Sum_(); }
 
@@ -114,17 +114,17 @@ struct setFloatResponse_ {
   typedef setFloatResponse_<ContainerAllocator> Type;
 
   setFloatResponse_()
-  : setAnswer()
+  : setAnswer(0.0)
   {
   }
 
   setFloatResponse_(const ContainerAllocator& _alloc)
-  : setAnswer(_alloc)
+  : setAnswer(0.0)
   {
   }
 
-  typedef std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  _setAnswer_type;
-  std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  setAnswer;
+  typedef double _setAnswer_type;
+  double setAnswer;
 
 
 private:
@@ -135,21 +135,21 @@ public:
   ROS_DEPRECATED const std::string __getDataType() const { return __s_getDataType_(); }
 
 private:
-  static const char* __s_getMD5Sum_() { return "29ec6205a21c6c9d10f6202c509b169a"; }
+  static const char* __s_getMD5Sum_() { return "ba18d35a4d3cea370e755997f303d718"; }
 public:
   ROS_DEPRECATED static const std::string __s_getMD5Sum() { return __s_getMD5Sum_(); }
 
   ROS_DEPRECATED const std::string __getMD5Sum() const { return __s_getMD5Sum_(); }
 
 private:
-  static const char* __s_getServerMD5Sum_() { return "f27ab96a470260944318f569cc318883"; }
+  static const char* __s_getServerMD5Sum_() { return "534d71573526d91e225c2160dfe4b29d"; }
 public:
   ROS_DEPRECATED static const std::string __s_getServerMD5Sum() { return __s_getServerMD5Sum_(); }
 
   ROS_DEPRECATED const std::string __getServerMD5Sum() const { return __s_getServerMD5Sum_(); }
 
 private:
-  static const char* __s_getMessageDefinition_() { return "string setAnswer\n\
+  static const char* __s_getMessageDefinition_() { return "float64 setAnswer\n\
 \n\
 \n\
 "; }
@@ -256,12 +256,12 @@ template<class ContainerAllocator>
 struct MD5Sum< ::image_adaptor::setFloatResponse_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "29ec6205a21c6c9d10f6202c509b169a";
+    return "ba18d35a4d3cea370e755997f303d718";
   }
 
   static const char* value(const  ::image_adaptor::setFloatResponse_<ContainerAllocator> &) { return value(); } 
-  static const uint64_t static_value1 = 0x29ec6205a21c6c9dULL;
-  static const uint64_t static_value2 = 0x10f6202c509b169aULL;
+  static const uint64_t static_value1 = 0xba18d35a4d3cea37ULL;
+  static const uint64_t static_value2 = 0x0e755997f303d718ULL;
 };
 
 template<class ContainerAllocator>
@@ -278,7 +278,7 @@ template<class ContainerAllocator>
 struct Definition< ::image_adaptor::setFloatResponse_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "string setAnswer\n\
+    return "float64 setAnswer\n\
 \n\
 \n\
 ";
@@ -287,6 +287,7 @@ struct Definition< ::image_adaptor::setFloatResponse_<ContainerAllocator> > {
   static const char* value(const  ::image_adaptor::setFloatResponse_<ContainerAllocator> &) { return value(); } 
 };
 
+template<class ContainerAllocator> struct IsFixedSize< ::image_adaptor::setFloatResponse_<ContainerAllocator> > : public TrueType {};
 } // namespace message_traits
 } // namespace ros
 
@@ -334,7 +335,7 @@ template<>
 struct MD5Sum<image_adaptor::setFloat> {
   static const char* value() 
   {
-    return "f27ab96a470260944318f569cc318883";
+    return "534d71573526d91e225c2160dfe4b29d";
   }
 
   static const char* value(const image_adaptor::setFloat&) { return value(); } 
@@ -354,7 +355,7 @@ template<class ContainerAllocator>
 struct MD5Sum<image_adaptor::setFloatRequest_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "f27ab96a470260944318f569cc318883";
+    return "534d71573526d91e225c2160dfe4b29d";
   }
 
   static const char* value(const image_adaptor::setFloatRequest_<ContainerAllocator> &) { return value(); } 
@@ -374,7 +375,7 @@ template<class ContainerAllocator>
 struct MD5Sum<image_adaptor::setFloatResponse_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "f27ab96a470260944318f569cc318883";
+    return "534d71573526d91e225c2160dfe4b29d";
   }
 
   static const char* value(const image_adaptor::setFloatResponse_<ContainerAllocator> &) { return value(); } 

@@ -59,7 +59,7 @@ public:
   ROS_DEPRECATED const std::string __getMD5Sum() const { return __s_getMD5Sum_(); }
 
 private:
-  static const char* __s_getServerMD5Sum_() { return "5e7c73c54dceb5dacb1b73908f3afdcb"; }
+  static const char* __s_getServerMD5Sum_() { return "f1188add3dec534dc11668e3b8036077"; }
 public:
   ROS_DEPRECATED static const std::string __s_getServerMD5Sum() { return __s_getServerMD5Sum_(); }
 
@@ -114,17 +114,17 @@ struct setIntegerResponse_ {
   typedef setIntegerResponse_<ContainerAllocator> Type;
 
   setIntegerResponse_()
-  : setAnswer()
+  : setAnswer(0)
   {
   }
 
   setIntegerResponse_(const ContainerAllocator& _alloc)
-  : setAnswer(_alloc)
+  : setAnswer(0)
   {
   }
 
-  typedef std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  _setAnswer_type;
-  std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  setAnswer;
+  typedef int64_t _setAnswer_type;
+  int64_t setAnswer;
 
 
 private:
@@ -135,21 +135,21 @@ public:
   ROS_DEPRECATED const std::string __getDataType() const { return __s_getDataType_(); }
 
 private:
-  static const char* __s_getMD5Sum_() { return "29ec6205a21c6c9d10f6202c509b169a"; }
+  static const char* __s_getMD5Sum_() { return "c45d6279501dc68282280a89f6f23997"; }
 public:
   ROS_DEPRECATED static const std::string __s_getMD5Sum() { return __s_getMD5Sum_(); }
 
   ROS_DEPRECATED const std::string __getMD5Sum() const { return __s_getMD5Sum_(); }
 
 private:
-  static const char* __s_getServerMD5Sum_() { return "5e7c73c54dceb5dacb1b73908f3afdcb"; }
+  static const char* __s_getServerMD5Sum_() { return "f1188add3dec534dc11668e3b8036077"; }
 public:
   ROS_DEPRECATED static const std::string __s_getServerMD5Sum() { return __s_getServerMD5Sum_(); }
 
   ROS_DEPRECATED const std::string __getServerMD5Sum() const { return __s_getServerMD5Sum_(); }
 
 private:
-  static const char* __s_getMessageDefinition_() { return "string setAnswer\n\
+  static const char* __s_getMessageDefinition_() { return "int64 setAnswer\n\
 \n\
 \n\
 "; }
@@ -256,12 +256,12 @@ template<class ContainerAllocator>
 struct MD5Sum< ::image_adaptor::setIntegerResponse_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "29ec6205a21c6c9d10f6202c509b169a";
+    return "c45d6279501dc68282280a89f6f23997";
   }
 
   static const char* value(const  ::image_adaptor::setIntegerResponse_<ContainerAllocator> &) { return value(); } 
-  static const uint64_t static_value1 = 0x29ec6205a21c6c9dULL;
-  static const uint64_t static_value2 = 0x10f6202c509b169aULL;
+  static const uint64_t static_value1 = 0xc45d6279501dc682ULL;
+  static const uint64_t static_value2 = 0x82280a89f6f23997ULL;
 };
 
 template<class ContainerAllocator>
@@ -278,7 +278,7 @@ template<class ContainerAllocator>
 struct Definition< ::image_adaptor::setIntegerResponse_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "string setAnswer\n\
+    return "int64 setAnswer\n\
 \n\
 \n\
 ";
@@ -287,6 +287,7 @@ struct Definition< ::image_adaptor::setIntegerResponse_<ContainerAllocator> > {
   static const char* value(const  ::image_adaptor::setIntegerResponse_<ContainerAllocator> &) { return value(); } 
 };
 
+template<class ContainerAllocator> struct IsFixedSize< ::image_adaptor::setIntegerResponse_<ContainerAllocator> > : public TrueType {};
 } // namespace message_traits
 } // namespace ros
 
@@ -334,7 +335,7 @@ template<>
 struct MD5Sum<image_adaptor::setInteger> {
   static const char* value() 
   {
-    return "5e7c73c54dceb5dacb1b73908f3afdcb";
+    return "f1188add3dec534dc11668e3b8036077";
   }
 
   static const char* value(const image_adaptor::setInteger&) { return value(); } 
@@ -354,7 +355,7 @@ template<class ContainerAllocator>
 struct MD5Sum<image_adaptor::setIntegerRequest_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "5e7c73c54dceb5dacb1b73908f3afdcb";
+    return "f1188add3dec534dc11668e3b8036077";
   }
 
   static const char* value(const image_adaptor::setIntegerRequest_<ContainerAllocator> &) { return value(); } 
@@ -374,7 +375,7 @@ template<class ContainerAllocator>
 struct MD5Sum<image_adaptor::setIntegerResponse_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "5e7c73c54dceb5dacb1b73908f3afdcb";
+    return "f1188add3dec534dc11668e3b8036077";
   }
 
   static const char* value(const image_adaptor::setIntegerResponse_<ContainerAllocator> &) { return value(); } 

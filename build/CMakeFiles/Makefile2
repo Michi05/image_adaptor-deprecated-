@@ -563,10 +563,73 @@ clean: CMakeFiles/rospack_gensrv_all.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir
+
+# All Build rule for target.
+CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/all: CMakeFiles/tests.dir/all
+	$(MAKE) -f CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/build.make CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/depend
+	$(MAKE) -f CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/build.make CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles 
+	@echo "Built target rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py"
+.PHONY : CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/super/ros_workspace/image_adaptor/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/super/ros_workspace/image_adaptor/build/CMakeFiles 0
+.PHONY : CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/rule
+
+# Convenience name for target.
+rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py: CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/rule
+.PHONY : rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py
+
+# clean rule for target.
+CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/clean:
+	$(MAKE) -f CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/build.make CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/clean
+.PHONY : CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/clean
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir
+
+# All Build rule for target.
+CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/all:
+	$(MAKE) -f CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/build.make CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/depend
+	$(MAKE) -f CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/build.make CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles 
+	@echo "Built target rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result"
+.PHONY : CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/super/ros_workspace/image_adaptor/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/super/ros_workspace/image_adaptor/build/CMakeFiles 0
+.PHONY : CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/rule
+
+# Convenience name for target.
+rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result: CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/rule
+.PHONY : rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result
+
+# clean rule for target.
+CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/clean:
+	$(MAKE) -f CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/build.make CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/clean
+.PHONY : CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/clean
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/test.dir
 
 # All Build rule for target.
 CMakeFiles/test.dir/all: CMakeFiles/tests.dir/all
+CMakeFiles/test.dir/all: CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/all
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/depend
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles 
@@ -659,7 +722,7 @@ clean: CMakeFiles/test-results.dir/clean
 # Target rules for target CMakeFiles/test-results-run.dir
 
 # All Build rule for target.
-CMakeFiles/test-results-run.dir/all:
+CMakeFiles/test-results-run.dir/all: CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/all
 	$(MAKE) -f CMakeFiles/test-results-run.dir/build.make CMakeFiles/test-results-run.dir/depend
 	$(MAKE) -f CMakeFiles/test-results-run.dir/build.make CMakeFiles/test-results-run.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/super/ros_workspace/image_adaptor/build/CMakeFiles 

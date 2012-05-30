@@ -304,6 +304,32 @@ rospack_gensrv_all/fast:
 .PHONY : rospack_gensrv_all/fast
 
 #=============================================================================
+# Target rules for targets named rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py
+
+# Build rule for target.
+rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py
+.PHONY : rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py
+
+# fast build rule for target.
+rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py/fast:
+	$(MAKE) -f CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/build.make CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir/build
+.PHONY : rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py/fast
+
+#=============================================================================
+# Target rules for targets named rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result
+
+# Build rule for target.
+rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result
+.PHONY : rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result
+
+# fast build rule for target.
+rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result/fast:
+	$(MAKE) -f CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/build.make CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir/build
+.PHONY : rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result/fast
+
+#=============================================================================
 # Target rules for targets named test
 
 # Build rule for target.
@@ -392,6 +418,8 @@ help:
 	@echo "... rospack_genmsg_libexe"
 	@echo "... rospack_gensrv"
 	@echo "... rospack_gensrv_all"
+	@echo "... rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py"
+	@echo "... rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result"
 	@echo "... test"
 	@echo "... test-future"
 	@echo "... test-results"

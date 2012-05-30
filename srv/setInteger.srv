@@ -1,4 +1,4 @@
 string topicName
 int64 newValue
 ---
-string setAnswer
+int64 setAnswer

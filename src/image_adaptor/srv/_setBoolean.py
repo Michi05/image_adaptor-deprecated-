@@ -130,15 +130,15 @@ import struct
 
 
 class setBooleanResponse(roslib.message.Message):
-  _md5sum = "29ec6205a21c6c9d10f6202c509b169a"
+  _md5sum = "e630a2f2cea41edbedb990c35c6910ef"
   _type = "image_adaptor/setBooleanResponse"
   _has_header = False #flag to mark the presence of a Header object
-  _full_text = """string setAnswer
+  _full_text = """bool setAnswer
 
 
 """
   __slots__ = ['setAnswer']
-  _slot_types = ['string']
+  _slot_types = ['bool']
 
   def __init__(self, *args, **kwds):
     """
@@ -158,9 +158,9 @@ class setBooleanResponse(roslib.message.Message):
       super(setBooleanResponse, self).__init__(*args, **kwds)
       #message fields cannot be None, assign default values for those that are
       if self.setAnswer is None:
-        self.setAnswer = ''
+        self.setAnswer = False
     else:
-      self.setAnswer = ''
+      self.setAnswer = False
 
   def _get_types(self):
     """
@@ -175,9 +175,7 @@ class setBooleanResponse(roslib.message.Message):
     @type  buff: StringIO
     """
     try:
-      _x = self.setAnswer
-      length = len(_x)
-      buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_B.pack(self.setAnswer))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -190,11 +188,9 @@ class setBooleanResponse(roslib.message.Message):
     try:
       end = 0
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.setAnswer = str[start:end]
+      end += 1
+      (self.setAnswer,) = _struct_B.unpack(str[start:end])
+      self.setAnswer = bool(self.setAnswer)
       return self
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
@@ -209,9 +205,7 @@ class setBooleanResponse(roslib.message.Message):
     @type  numpy module
     """
     try:
-      _x = self.setAnswer
-      length = len(_x)
-      buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_B.pack(self.setAnswer))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -226,18 +220,17 @@ class setBooleanResponse(roslib.message.Message):
     try:
       end = 0
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.setAnswer = str[start:end]
+      end += 1
+      (self.setAnswer,) = _struct_B.unpack(str[start:end])
+      self.setAnswer = bool(self.setAnswer)
       return self
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = roslib.message.struct_I
+_struct_B = struct.Struct("<B")
 class setBoolean(roslib.message.ServiceDefinition):
   _type          = 'image_adaptor/setBoolean'
-  _md5sum = '3033c2979f4e4675025fc2914d653e07'
+  _md5sum = 'fde587b1db6e33328e50f2ea2c9e870b'
   _request_class  = setBooleanRequest
   _response_class = setBooleanResponse

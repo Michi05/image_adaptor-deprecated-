@@ -14,6 +14,8 @@
 /home/super/ros_workspace/image_adaptor/build/CMakeFiles/rospack_genmsg_libexe.dir
 /home/super/ros_workspace/image_adaptor/build/CMakeFiles/rospack_gensrv.dir
 /home/super/ros_workspace/image_adaptor/build/CMakeFiles/rospack_gensrv_all.dir
+/home/super/ros_workspace/image_adaptor/build/CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py.dir
+/home/super/ros_workspace/image_adaptor/build/CMakeFiles/rostest__home_super_ros_workspace_image_adaptor_test_img_a_test-code.py_result.dir
 /home/super/ros_workspace/image_adaptor/build/CMakeFiles/test.dir
 /home/super/ros_workspace/image_adaptor/build/CMakeFiles/test-future.dir
 /home/super/ros_workspace/image_adaptor/build/CMakeFiles/test-results.dir
