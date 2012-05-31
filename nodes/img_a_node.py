@@ -12,6 +12,17 @@ and any camera device drivers with the appropriate file configuration in the "tr
 ###############################################################################
  # Constants
 globals()["PACKAGE_NAME"] = 'image_adaptor'
+###############################################################################
+
+
+
+
+
+
+
+
+
+
 
 
 ###############################################################################
@@ -25,6 +36,16 @@ globals()["KEY_TIMEOUT"] = "service_time_out"
 globals()["DEFAULT_TIMEOUT"] = 3
  # Global values
 globals()["serviceTimeOut"] = 3
+###############################################################################
+
+
+
+
+
+
+
+
+
 
 
 ###############################################################################
@@ -60,6 +81,15 @@ from image_adaptor.cfg import PropertiesConfig
 # February14
 from stereo_msgs.msg import *
 from sensor_msgs.msg import *
+###############################################################################
+
+
+
+
+
+
+
+
 
 
 
@@ -75,7 +105,7 @@ from sensor_msgs.msg import *
 
 
 ###############################################################################
-##  *****     *****    Self agreement:    *****     *****
+##  *****     *****    ((Self agreement)):    *****     *****
 ###############################################################################
 # # #  *** ( Not being followed anymore by the moment ) ***
         # "None" values mean that some Error was already reported
@@ -108,6 +138,21 @@ from sensor_msgs.msg import *
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###############################################################################
 ##  *****     *****    Beginning of the executable code    *****     *****
 ###############################################################################
@@ -120,6 +165,13 @@ ppty = {"reference":0, "type":1, "kind":2}
 PPTY_REF = ppty["reference"]
 PPTY_TYPE = ppty["type"]
 PPTY_KIND = ppty["kind"]
+###############################################################################
+
+
+
+
+
+
 
 
 
@@ -166,7 +218,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
             self.listenToRequests()
             rospy.loginfo("Interface for requests created.")
         except:
-            rospy.logerr("Error while trying to initialize dynamic parameter server.")
+            rospy.logerr("Error while trying to initialise dynamic parameter server.")
             raise
         return
 
@@ -240,7 +292,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
                 newValue = dynConfiguration[elem]
                 newConfig[paramName] = newValue
             else:
-                print "Error while retrieving reverse translation"
+                rospy.logerr("Error while retrieving reverse translation.")
 
         if avoidPropagation == True:
             self.avoidRemoteReconf = self.avoidRemoteReconf + 1
@@ -253,23 +305,21 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
     def setTopicLocation(self, setStrMsg):
         rospy.loginfo (str("Received call to set/TopicLocation " + setStrMsg.topicName + " " + setStrMsg.newValue))
         translation = self.translator.interpret(setStrMsg.topicName)
-        if translation != None:
+        if translation != None and (translation[PPTY_KIND]=="publishedTopic" or translation[PPTY_KIND]=="topic"):
             oldAddress = translation[PPTY_REF]
-            rospy.loginfo (str("...relocating " + oldAddress + "..."))
-            if self.driverMgr.relocateTopic(oldAddress, setStrMsg.newValue):
-                print "...setting new..."
-                self.translator.updateValue(setStrMsg.topicName, setStrMsg.newValue)
-            else:
-                print "...ERROR while relocating!"
-                return "...ERROR while relocating!"
         else:
-## WATCH OUT: This is dangerous but in case the topicName is not known; it is supposed to be a path.
-            print "...relocating ", setStrMsg.topicName + "..."
-            if self.driverMgr.relocateTopic(setStrMsg.topicName, setStrMsg.newValue):
-                print "...setting new..."
-            else:
-                print "...ERROR while relocating!"
-                return "...ERROR while relocating!"
+## WATCH OUT: This is dangerous but in case the topicName is not known; it is assumed that it is a path.
+            oldAddress = setStrMsg.topicName
+        rospy.loginfo (str("...relocating " + oldAddress + "..."))
+        
+        try:
+            self.driverMgr.relocateTopic(oldAddress, setStrMsg.newValue)
+            ## If it was a name; the value needs to be updated in the translator
+            if oldAddress == setStrMsg.topicName:
+                self.translator.updateValue(setStrMsg.topicName, setStrMsg.newValue)
+        except Exception as e:
+            rospy.logerr("Exception while relocating: %s"%(e))
+            return str("Exception while relocating: %s"%(e))
         return "Success!"
 
 
@@ -295,7 +345,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         elif (propertyData[PPTY_TYPE].lower()).find("bool") >= 0:
             valueType = bool
         else:
-            print "Error: non registered value type"
+            rospy.logerr("Error: non registered value type.")
             return None
         return self.setFixedTypeProperty(propertyName, newValue, valueType)
 
@@ -323,7 +373,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
         propertyData = self.translator.interpret(propertyName)
         #TODO: Any type checking here?
         if propertyData == None:
-            print "Error: trying to set not found property."
+            rospy.logerr("Error: trying to set not found property.")
             return None
 #        else:
 #            print "Obtained %s = %s."%(propertyName, propertyData[PPTY_REF])
@@ -335,7 +385,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
             self.driverMgr.sendByTopic(rospy.get_namespace() + propertyData[PPTY_REF], newValue, remoteType[valueType])
         else:
             resp1 = False
-            print "Error: unable to set property %s of kind: '%s'"%(propertyName, propertyData[PPTY_KIND])
+            rospy.logerr("Error: unable to set property %s of kind: '%s'"%(propertyName, propertyData[PPTY_KIND]))
         return valueType(resp1)
 
 
@@ -411,7 +461,7 @@ class img_interface_node: ## This is the LISTENER for the layer ABOVE
                     valueType2 = Image
                 resp1 = self.driverMgr.getTopic(propertyData[PPTY_REF], valueType2)
         else:
-            print "Error: unable to get property %s of kind %s"%(propertyName, propertyData[PPTY_TYPE])
+            rospy.logerr("Error: unable to get property %s of kind %s"%(propertyName, propertyData[PPTY_TYPE]))
             resp1 = None
         return resp1
 
@@ -466,7 +516,7 @@ both translations) and several methods for translating."""
             # Loads the YAML Config in a pair of lists of names (drivers) and dictionaries (properties)
             self.translations = self.readYAMLConfig(file_name = config_filename)
             # A reverse dictionary is necessary to search for the original property names when needed
-            self.ReversePropDict = self.getReversed()
+            self.ReversePropDict = self.generateReverseDictionary()
             
             rospy.loginfo("Property configuration loaded:")
         except:
@@ -499,7 +549,7 @@ both translations) and several methods for translating."""
                 resp1 = dictionary[propertyName]
                 break
         if resp1 == None:
-            print "Property '%s' not found. Returning the whole string."%propertyName
+            rospy.loginfo("Property '%s' not found. Returning the whole string."%propertyName)
         return resp1
 
     def reverseInterpret(self, reverseProperty):
@@ -511,7 +561,7 @@ both translations) and several methods for translating."""
                 if str(path + "/" + reverseProperty) in self.ReversePropDict:
                     result = self.ReversePropDict[str(path + "/" + reverseProperty)]
         if result == "":
-            print "not %s nor %s found in the property list."%(reverseProperty, str(path + "/" + reverseProperty), self.ReversePropDict)
+            rospy.loginfo("not %s nor %s found in the property list."%(reverseProperty, str(path + "/" + reverseProperty), self.ReversePropDict))
         return result
 
     
@@ -542,25 +592,20 @@ both translations) and several methods for translating."""
         ## Once the config is successfully loaded:
         for page in yamlConfig:
             if len(page) < 1:
-                rospy.logerr("WRONG YAML FORMAT!! Nothing found in this page.")
+                rospy.logerr("WRONG CONFIG FORMAT!! Nothing found in this page. Exactly one entry expected.")
             if len(page) > 1:
-                rospy.logerr("WRONG YAML FORMAT!! More than one dictionary in a single page.")
+                rospy.logerr("STRANGE CONFIG FORMAT!! More than one dictionary in a single page. Exactly one entry expected.")
 # There is supposed to be only 1 dictionary but it
 #can be useful for the future making it with a loop
             for driverName in page:
-                ## Store the properties...
+                ## Store the properties in the second list...
                 newDictionaries[1].append(page[driverName])
-                ##...and the driver without the last '/'
+                ##...and the driver path without the last '/'
                 if len(driverName) > 0 and driverName[-1] == '/':
                     newDictionaries[0].append(driverName[:-1])
                 else:
                     newDictionaries[0].append(driverName)
         
-        
-# Remove all the beginning and ending blanks and also the blanks near ':' and then splits using ':'
-#    without_blanks01 = re.sub('(^([\t ]*)|([\t ]*)$)', "", content.replace( "\n", "" ).replace( "\r", "" ))
-#    without_blanks02 = re.sub('( |\t)*,[\t ]*', ',', without_blanks01)
-#    dataRead = re.sub('( |\t)*:[\t ]*', ':', without_blanks02).split(':')
         print " Translation Configuration read from YAML file:"
         for driver, dictionary in zip(newDictionaries[0], newDictionaries[1]): ## enumerate() if index numbers needed
             print "\r\n\r\nDictionary %s:"%driver
@@ -568,8 +613,46 @@ both translations) and several methods for translating."""
                 print elem, "\t:\t", dictionary[elem]
         return newDictionaries
     
+
+    def cleanRenamings(self, driverManager):
+        """Launches a multiplexor node that relocates a topic to a new address.
+        PRECONDITION: the driverManager must be already initialised (obviously)
+        and the topics must be already publishing (for now).
+        NOTE: Right now it checks if the topic exists... That may be avoidable if
+        the multiplexor can be working anyway for future topics.
+        The method is supposed to be launched from the outside when loading; the
+        later the better."""
+        dictionaryList = self.translations[1]
+        for dictionary in dictionaryList:
+            for renaming in [prop for prop in dictionary if dictionary[prop][PPTY_KIND]=="renaming"]:
+## TODO: document this with care; only topics can be renamed and the "renaming" keyword should be configurable
+## the type of topic is being obviously ignored; which can have secondary effects maybe?
+## TODO: right now this is working with paths; as soon as it works it must be adapted to work with names
+                rospy.loginfo("Automatically renaming from " + dictionary[renaming][PPTY_REF] + " to " + renaming)
+                translation = self.interpret(dictionary[renaming][PPTY_REF])
+                if translation != None and (translation[PPTY_KIND]=="publishedTopic" or translation[PPTY_KIND]=="topic"):
+                    oldAddress = translation[PPTY_REF]
+                    rospy.loginfo("...the " + dictionary[renaming][PPTY_REF] + " property is mapped as " + oldAddress)
+                else:
+                    oldAddress = dictionary[renaming][PPTY_REF]
+                    
+                try:
+                    rospy.loginfo("Remaping from " + oldAddress + " to " + renaming)
+                    driverManager.relocateTopic(oldAddress, renaming)
+                    ## If it was a name; the value needs to be updated in the translator
+                    if oldAddress == translation[PPTY_REF]:
+                        self.translator.updateValue(dictionary[renaming][PPTY_REF], renaming)
+                except Exception as e:
+                    rospy.logerr("Exception while relocating: %s"%(e))
+                    return str("Exception while relocating: %s"%(e))
+                del dictionary[renaming]
+        return
     
-    def getReversed(self):
+    
+    def generateReverseDictionary(self):
+        """Generates a dictionary for the translator using the driver-side name as
+        key and the name inside of the interface as value as the correlation is
+        needed in both directions"""
         reversePropDict = {}
         return reversePropDict
         for dictionary in self.translations[1]:
@@ -580,11 +663,13 @@ both translations) and several methods for translating."""
 
 
     def dynamicServers(self):
-        drivers = []
+        """Generates a list with the relative or absolute paths of the different
+        dynamic reconfigure servers according to the YAML property configuration file."""
+        driverServers = []
         for elem in self.translations[0]:
             if elem != "" and elem != "~":
-                drivers.append(elem)
-        return drivers
+                driverServers.append(elem)
+        return driverServers
     
 ###################################################
 # ****   Properties Utility Methods
@@ -742,7 +827,7 @@ class manager3D:
 # ****   Topic getter for different types
 #==================================================
     def getTopic(self, topicName, data_type = str):
-        print "Requesting %s with type %s"%(topicName, data_type)
+        rospy.loginfo("Requesting %s with type %s"%(topicName, data_type))
         rcvdMsg = rospy.wait_for_message(topicName, data_type, serviceTimeOut)
         return rcvdMsg
 
@@ -762,15 +847,15 @@ class manager3D:
         """Method meant to be executed in a different thread in order
         to repeat a number of messages received from a topic to another one."""
         if source_topic in rospy.get_published_topics(namespace='/') == False:
-            print "Unable to find %s topic in %s in order to retransmit it"%(source_topic, rospy.get_published_topics(namespace='/'))
+            rospy.logwarn("Unable to find %s topic in %s in order to retransmit it"%(source_topic, rospy.get_published_topics(namespace='/')))
             return False
-        print "Trying to retransmit %s in %s."%(source_topic, output_topic)
+        rospy.loginfo("Trying to retransmit %s in %s."%(source_topic, output_topic))
         publisher_topic = rospy.Publisher(output_topic, data_type)
         try:
             for i in xrange(0, times):
                 publisher_topic.publish(rospy.wait_for_message(source_topic, data_type, serviceTimeOut))
         except exception as e:
-            print "Failed while trying to retransmit %s topic in %s."
+            rospy.logerr("Failed while trying to retransmit %s topic in %s.")
         return True
 
 
@@ -792,6 +877,8 @@ class manager3D:
         '''This very important method is meant to change the topics from one name (or address) to another in runtime.
         Since that not possible in a literal way; "mux" tool is used to repeat them under the new name/address.
         
+        PRECONDITION: the oldAddress is in fact an address, not a name, since it hasn't got any sense to have names at this level
+        
         ### Here's a next step when they complete their project >>> callService("rosspawn/start", "")
         '''
         myNamespace = '/'.join(rospy.get_namespace().split('/')[:-2])
@@ -805,12 +892,12 @@ class manager3D:
         if oldAddress in self.createdMuxes:
             ## In case the oldAddress is already relocated, the first node is killed
             newIndex = self.createdMuxes[oldAddress][0]
-            print "I will execute:", 'rosnode kill ' + myNamespace + '/mux' + str(newIndex)
+            rospy.loginfo(str("I will execute: rosnode kill " + myNamespace + '/mux' + str(newIndex)))
             subprocess.Popen(shlex.split('rosnode kill ' + myNamespace + '/mux' + str(newIndex)), close_fds=True)
         ## Postcondition: the index is up to date and the previous mux node is supposed to be already killed
         self.createdMuxes[oldAddress] = (newIndex, newAddress) ## Maybe the address should be checked first
-        print "Relocating from", oldAddress, "to", newAddress
-        print "I will execute:", 'roslaunch image_adaptor runMultiplexers.launch namespace:="' + myNamespace + '" node_id:="mux' + str(newIndex) + '" args:="' + newAddress + ' ' + oldAddress + '"'
+        rospy.loginfo("Relocating from " + oldAddress + " to " + newAddress)
+        rospy.loginfo('I will execute: roslaunch image_adaptor runMultiplexers.launch namespace:="' + myNamespace + '" node_id:="mux' + str(newIndex) + '" args:="' + newAddress + ' ' + oldAddress + '"')
         subprocess.Popen(shlex.split('roslaunch image_adaptor runMultiplexers.launch namespace:="' + myNamespace + '" node_id:="mux' + str(newIndex) + '" args:="' + newAddress + ' ' + oldAddress + '"'), close_fds=True)
 ##        subprocess.Popen(shlex.split('rosrun topic_tools mux ...
         return True
@@ -820,17 +907,19 @@ class manager3D:
 # ****   Service Callers
 #==================================================
     def callService(service, arguments, valueType = stringValue):
+        """Calls services in a generic way in order to have an interface for any service.
+        NOTE: It is not being used right now for the moment but it may be useful in the future."""
         try:
             rospy.wait_for_service(service, timeout = serviceTimeOut * 10)
             remoteFunction = rospy.ServiceProxy(service, valueType)
             resp1 = remoteFunction(arguments)
-            print "Service call response is %s"%resp1
+            rospy.loginfo("Service call response is %s"%resp1)
         except rospy.ServiceException as service_exception:
             resp1 = None
-            print "Service call failed: %s"%(service_exception)
+            rospy.logerr("Service call failed: %s"%(service_exception))
         except Exception as e:
             resp1 = None
-            print "Exception while calling service: %s"%(e)
+            rospy.logerr("Exception while calling service: %s"%(e))
         return resp1
     
 
@@ -896,12 +985,19 @@ def mainFunction(basename):
 
             mainDriverManager = manager3D(dynServers = mainTranslator.dynamicServers())
             globals()["ifcNode"] = img_interface_node(translator = mainTranslator, driverMgr = mainDriverManager)
+            
+            rospy.loginfo("Waiting before cleaning renamings.")
+            rospy.sleep(5)
+            mainTranslator.cleanRenamings(mainDriverManager)
+                
+            
         except KeyboardInterrupt:
             sys.exit(0)
-        except:
+        except Exception as e:
 #            print "Unexpected error:", sys.exc_info()[1]
 #            raise
             rospy.logerr("Error while trying to Initialise node. Waiting 10s")
+            rospy.logerr(("Error: %s."%e).center(80, '*'))
             try:
         ## If there was any error I delete the objects and begin from scratch
         # I could just use a try/except for each initialisation but I don't see real improvement on that
